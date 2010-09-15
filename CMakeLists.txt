@@ -280,6 +280,7 @@ SET(CTK_LIBS
   Visualization/VTK/Core:OFF
   Visualization/VTK/Widgets:OFF
   Visualization/XIP:OFF
+  Visualization/BBTK/Widgets:OFF
   )
 
 #-----------------------------------------------------------------------------

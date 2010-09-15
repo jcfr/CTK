@@ -26,6 +26,9 @@
 # PYTHONQT_INSTALL_DIR
 # PYTHON_LIBRARY
 # PYTHON_INCLUDE_DIR
+# BOOST_ROOT
+# crea_DIR
+# BBTK_DIR
 #
 
 #-----------------------------------------------------------------------------
@@ -122,6 +125,9 @@ SET(external_projects
   OpenIGTLink
   VTK
   XIP
+  Boost
+  crea
+  BBTK
   )
 
 # Include external projects
@@ -151,7 +157,10 @@ ExternalProject_Add(${proj}
     ${ZMQ_DEPENDS}
     ${OpenIGTLink_DEPENDS}
     ${VTK_DEPENDS}
-    ${XIP_DEPENDS}    
+    ${XIP_DEPENDS}
+    ${Boost_DEPENDS}
+    ${crea_DEPENDS}
+    ${BBTK_DEPENDS}
 )
 
 #-----------------------------------------------------------------------------
@@ -235,6 +244,9 @@ ExternalProject_Add(${proj}
     -DPYTHONQT_INSTALL_DIR:PATH=${PYTHONQT_INSTALL_DIR} # FindPythonQt expects PYTHONQT_INSTALL_DIR variable to be defined
     -DPYTHONQTGENERATOR_EXECUTABLE:FILEPATH=${PYTHONQTGENERATOR_EXECUTABLE} #FindPythonQtGenerator expects PYTHONQTGENERATOR_EXECUTABLE to be defined
     -DLog4Qt_DIR:PATH=${Log4Qt_DIR} # FindLog4Qt expects Log4Qt_DIR variable to be defined
+    -DBOOST_ROOT:PATH=${BOOST_ROOT} # FindBoost expects BOOST_ROOT variable to be defined
+    -Dcrea_DIR:PATH=${crea_DIR} # FindPackage(crea) expects crea_DIR variable to be defined
+    -DBBTK_DIR:PATH=${BBTK_DIR} # FindPackage(BBTK) expects BBTK_DIR variable to be defined
   SOURCE_DIR ${CTK_SOURCE_DIR}
   BINARY_DIR ${CTK_BINARY_DIR}/CTK-build
   BUILD_COMMAND ""
