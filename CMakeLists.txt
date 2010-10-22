@@ -333,6 +333,10 @@ SET(CTK_APPLICATIONS_SUBDIRS )
 # The following FOREACH loops are used to:
 #   1) Add build options associated with either libraries, plugins and applications
 #   2) Update either CTK_LIBS_SUBDIRS, CTK_PLUGINS_SUBDIRS or CTK_APPS_SUBDIRS variables
+#   3) Force build options associated with either libraries, plugins and apps 
+#      to ON if CTK_BUILD_ALL is ON
+#      Note: Libraries option (associated with ctk_library_options.cmake) will be kept 
+#            to their default value
 # 
 # For CTK libraries, if the file Libs/<DIR>/<LIBNAME>/ctk_library_options.cmake exists,
 # in addition to 'CTK_LIB_<DIR>/<LIBNAME>' option, the following ones
@@ -347,6 +351,10 @@ SET(CTK_APPLICATIONS_SUBDIRS )
 #       OPT2:ON
 #       )
 
+# CTK_BUILD_ALL option allows to easily force libraries, plugins and apps build options to ON
+OPTION(CTK_BUILD_ALL "Build all libraries, plugins and applications" OFF)
+MARK_AS_ADVANCED(CTK_BUILD_ALL)
+
 # Build options associated with CTK libraries
 SET(ctk_lib_options_list) # This list will be updated in ctkFunctionExtractOptionNameAndValue
 FOREACH(lib ${CTK_LIBS})
@@ -354,6 +362,10 @@ FOREACH(lib ${CTK_LIBS})
   OPTION(CTK_LIB_${lib_name} "Enable ${lib_name} Library." ${lib_value})
   ctkMacroAddCtkLibraryOptions(${lib_name})
   LIST(APPEND CTK_LIBS_SUBDIRS "${lib_name}")
+  IF(CTK_BUILD_ALL)
+    SET(CTK_LIB_${lib_name} ON CACHE Boolean "Build ${lib_name} Library." FORCE)
+    #MESSAGE(STATUS "Forcing CTK_LIB_${lib_name} to ON")
+  ENDIF()
 ENDFOREACH()
 
 # Build options associated with CTK plugins
@@ -361,6 +373,10 @@ FOREACH(plugin ${CTK_PLUGINS})
   ctkFunctionExtractOptionNameAndValue(${plugin} plugin_name plugin_value)
   OPTION(CTK_PLUGIN_${plugin_name} "Build ${plugin_name} Plugin." ${plugin_value})
   LIST(APPEND CTK_PLUGINS_SUBDIRS "${plugin_name}")
+  IF(CTK_BUILD_ALL)
+    SET(CTK_PLUGIN_${plugin_name} ON CACHE Boolean "Build ${plugin_name} Plugin." FORCE)
+    #MESSAGE(STATUS "Forcing CTK_PLUGIN_${plugin_name} to ON")
+  ENDIF()
 ENDFOREACH()
 
 # Create a file with variables containing the paths to the source, binary, and library directory
@@ -380,6 +396,10 @@ FOREACH(app ${CTK_APPLICATIONS})
   ctkFunctionExtractOptionNameAndValue(${app} app_name app_value)
   OPTION(CTK_APP_${app_name} "Build ${app_name} Application." ${app_value})
   LIST(APPEND CTK_APPLICATIONS_SUBDIRS "${app_name}")
+  IF(CTK_BUILD_ALL)
+    SET(CTK_APP_${app_name} ON CACHE Boolean "Build ${app_name} Application." FORCE)
+    #MESSAGE(STATUS "Forcing CTK_APP_${app_name} to ON")
+  ENDIF()
 ENDFOREACH()
 
 #-----------------------------------------------------------------------------
