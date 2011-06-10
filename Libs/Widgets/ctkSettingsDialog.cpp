@@ -278,6 +278,7 @@ void ctkSettingsDialog::restoreDefaultSettings()
     {
     panel->restoreDefaultSettings();
     }
+  d->SettingsButtonBox->button(QDialogButtonBox::Reset)->setEnabled(false);
 }
 
 // --------------------------------------------------------------------------
