@@ -21,7 +21,7 @@
 // STL includes
 #include <stdexcept>
 
-// Qt includes 
+// Qt includes
 #include <QHash>
 #include <QStringList>
 #include <QTextStream>
@@ -226,14 +226,14 @@ public:
   {}
 
   ~ctkInternal() { qDeleteAll(ArgumentDescriptionList); }
-  
+
   CommandLineParserArgumentDescription* argumentDescription(const QString& argument);
-  
+
   QList<CommandLineParserArgumentDescription*>                 ArgumentDescriptionList;
   QHash<QString, CommandLineParserArgumentDescription*>        ArgNameToArgumentDescriptionMap;
   QMap<QString, QList<CommandLineParserArgumentDescription*> > GroupToArgumentDescriptionListMap;
-  
-  QStringList UnparsedArguments; 
+
+  QStringList UnparsedArguments;
   QStringList ProcessedArguments;
   QString     ErrorString;
   bool        Debug;
@@ -287,6 +287,58 @@ CommandLineParserArgumentDescription*
 
 // --------------------------------------------------------------------------
 // ctkCommandLineParser methods
+
+namespace
+{
+// --------------------------------------------------------------------------
+QVariant::Type variantFromArgumentType(const QString& argumentType)
+{
+  QVariant::Type type = QVariant::nameToType(argumentType.toLower().toLatin1());
+  if (type == QVariant::Invalid)
+    {
+    type = QVariant::nameToType(("Q" + argumentType).toLatin1());
+    }
+  return type;
+}
+}
+
+// --------------------------------------------------------------------------
+QString ctkCommandLineParser::parseArguments(const QString& argumentDefinitions,
+                                             const QStringList &arguments,
+                                             QHash<QString, QVariant>& parsedArguments,
+                                             QStringList& unparsedArguments)
+{
+  QStringList argumentDefinitionsList = argumentDefinitions.split("|");
+  ctkCommandLineParser parser;
+  foreach(const QString& argumentDefinition, argumentDefinitionsList)
+    {
+    QStringList argumentDefinitionList = argumentDefinition.split(",");
+    if (argumentDefinitionList.count() != 4)
+      {
+      qWarning() << "Invalid argument definition:" << argumentDefinition
+                 << " - Expected definition should have the following form: "
+                    "<LongArg>,<ShortArg>,<Type>,<Doc>";
+      continue;
+      }
+    parser.addArgument(argumentDefinitionList.at(0),
+                       argumentDefinitionList.at(1),
+                       variantFromArgumentType(argumentDefinitionList.at(2)),
+                       argumentDefinitionList.at(3));
+    }
+  parsedArguments = parser.parseArguments(arguments);
+  unparsedArguments = parser.unparsedArguments();
+  return parser.errorString();
+}
+
+// --------------------------------------------------------------------------
+QString ctkCommandLineParser::parseArguments(const QString& argumentDefinitions,
+                                             const QStringList &arguments,
+                                             QHash<QString, QVariant>& parsedArguments)
+{
+  QStringList unparsedArguments;
+  return ctkCommandLineParser::parseArguments(
+        argumentDefinitions, arguments, parsedArguments, unparsedArguments);
+}
 
 // --------------------------------------------------------------------------
 ctkCommandLineParser::ctkCommandLineParser(QObject* newParent) : Superclass(newParent)
@@ -424,7 +476,7 @@ QHash<QString, QVariant> ctkCommandLineParser::parseArguments(const QStringList&
           {
           if (i + j >= arguments.size())
             {
-            this->Internal->ErrorString = 
+            this->Internal->ErrorString =
                 missingParameterError.arg(argument).arg(j-1).arg(numberOfParametersToProcess);
             if (this->Internal->Debug) { qDebug() << this->Internal->ErrorString; }
             if (ok) { *ok = false; }

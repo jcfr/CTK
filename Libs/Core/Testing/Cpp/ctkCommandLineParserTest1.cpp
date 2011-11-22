@@ -219,7 +219,7 @@ int ctkCommandLineParserTest1(int, char*[])
   arguments5 << "--string"<< "ctkStop";
   arguments5 << "--int"<< "2";
   arguments5 << "--list"<< "item2" << "item3";
-  
+
   ok = false;
   parser5.parseArguments(arguments5, &ok);
   if (!ok)
@@ -303,16 +303,16 @@ int ctkCommandLineParserTest1(int, char*[])
             << ", parser5.errorString()" << parser5.errorString();
     return EXIT_FAILURE;
     }
-    
+
   // Test6 - Check if the parser handle the case when value of parameter is omitted
   ctkCommandLineParser parser6;
   parser6.addArgument("--string", "", QVariant::String, "This is a string");
   parser6.addArgument("--bool", "", QVariant::Bool, "This is a bool");
-  
-  QStringList arguments6; 
+
+  QStringList arguments6;
   arguments6 << "ctkCommandLineParserTest1"
              << "--string";
-  
+
   // since --string is missing a parameter, parseArgument is expected to fail
   ok = false;
   parser6.parseArguments(arguments6, &ok);
@@ -798,6 +798,54 @@ int ctkCommandLineParserTest1(int, char*[])
   if (ok)
     {
     qCritical() << "Test16-3 - parsing arguments should fail.";
+    return EXIT_FAILURE;
+    }
+
+  // Test17 - Check parseArguments()
+  QStringList arguments17;
+  arguments17 << "ctkCommandLineParserTest1";
+  arguments17 << "-D" << "/path/to/foo";
+  arguments17 << "-I";
+  arguments17 << "-it" << "8";
+  arguments17 << "foo" << "bar";
+
+  QStringList expectedParsedArguments17 =
+      QStringList() << "-D" << "-I" << "--numberOfIterations";
+  QStringList expectedUnparsedArguments17 =
+      QStringList() << "foo" << "bar";
+
+  QHash<QString, QVariant> parsedArgs17;
+  QStringList unparsedArgs17;
+  QString parseError = ctkCommandLineParser::parseArguments(
+        ",-I,Bool,Interactive|,-D,String,Data directory|--numberOfIterations,-it,Int,",
+        arguments17, parsedArgs17, unparsedArgs17);
+
+  if (!parseError.isEmpty())
+    {
+    qCritical() << "Test17 - Failed to parse arguments." << parseError;
+    return EXIT_FAILURE;
+    }
+  if (expectedParsedArguments17 != parsedArgs17.keys())
+    {
+    qCritical() << "Test7 - Failed - expectedParsedArguments17 " << expectedUnparsedArguments
+                << ", parsedArgs17.keys" << parsedArgs17;
+    return EXIT_FAILURE;
+    }
+  if (parsedArgs17["-D"].toString() != "/path/to/foo")
+    {
+    qCritical() << "Test17 - Returned hash map contains wrong value associated with -D argument.";
+    return EXIT_FAILURE;
+    }
+  if (parsedArgs17["--numberOfIterations"].toInt() != 8)
+    {
+    qCritical() << "Test17 - Returned hash map contains wrong value associated with -it argument."
+                << "";
+    return EXIT_FAILURE;
+    }
+  if (expectedUnparsedArguments17 != unparsedArgs17)
+    {
+    qCritical() << "Test7 - Failed - expectedUnparsedArguments17 " << expectedUnparsedArguments17
+                << ", unparsedArgs17 " << unparsedArgs17;
     return EXIT_FAILURE;
     }
 

@@ -114,6 +114,35 @@ public:
 
   typedef QObject Superclass;
 
+
+  /**
+   * Convenient method allowing to parse command line argument.
+   *
+   * @param argumentDefinitions Argument definitions described using the following syntax: <LongArg>,<ShortArg>,<Type>,<Doc>(|<LongArg>,<ShortArg>,<Type>,<Doc>|...)
+   * @param arguments List of argument to parse.
+   * @param parsedArguments Parsed arguments.
+   * @param unparsedArguments List of unparsed arguments.
+   *
+   * \sa parseArguments(const QString&, const QStringList&, QHash<QString, QVariant>&)
+   */
+  static QString parseArguments(const QString& argumentDefinitions,
+                                const QStringList& arguments,
+                                QHash<QString, QVariant>& parsedArguments,
+                                QStringList& unparsedArguments);
+
+  /**
+   * Convenient method allowing to parse command line argument.
+   *
+   * @param argumentDefinitions Argument definitions described using the following syntax: <LongArg>,<ShortArg>,<Type>,<Doc>(|<LongArg>,<ShortArg>,<Type>,<Doc>|...)
+   * @param arguments List of argument to parse.
+   * @param parsedArguments Parsed arguments.
+   *
+   * \sa parseArguments(const QString&, const QStringList&, QHash<QString, QVariant>&, QStringList&)
+   */
+  static QString parseArguments(const QString& argumentDefinitions,
+                                const QStringList &arguments,
+                                QHash<QString, QVariant>& parsedArguments);
+
   /**
    * Constructs a parser instance.
    *
@@ -145,7 +174,7 @@ public:
   ctkCommandLineParser(QSettings* settings, QObject* newParent = 0);
 
   ~ctkCommandLineParser();
-  
+
   /**
    * Parse a given list of command line arguments.
    *
@@ -182,7 +211,7 @@ public:
    * @see parseArguments(const QStringList&, bool*)
    */
   QString errorString() const;
-  
+
   /**
    * This method returns all unparsed arguments, i.e. all arguments
    * for which no long or short name has been registered via a call
@@ -193,7 +222,7 @@ public:
    * @return A list containing unparsed arguments.
    */
   const QStringList& unparsedArguments() const;
-  
+
   /**
    * Checks if the given argument has been added via a call
    * to <code>addArgument()</code>.
@@ -321,7 +350,7 @@ public:
    * names start with "--" and short names with "-", while on Windows argument names
    * always start with "/".
    *
-   * Note that all methods in ctkCommandLineParser which take an argument name
+   * @note All methods in ctkCommandLineParser which take an argument name
    * expect the name as it was supplied to <code>addArgument</code>.
    *
    * Example usage:
@@ -345,7 +374,7 @@ public:
    * <code>addArgument()</code> will be put in the new group. You can close the
    * current group by calling <code>endGroup()</code> or be opening a new group.
    *
-   * Note that groups cannot be nested and all arguments which do not belong to
+   * @note Groups cannot be nested and all arguments which do not belong to
    * a group will be listed at the top of the text created by <code>helpText()</code>.
    *
    * @param description The description of the group
