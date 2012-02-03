@@ -46,8 +46,8 @@
 
 // NOTE: using ctk stand-in class for now - switch back
 // to dcmtk's scu.h when cget support is in a release version
-//#include <dcmtk/dcmnet/scu.h>
-#include <ctkDcmSCU.h>
+#include <dcmtk/dcmnet/scu.h>
+//#include <ctkDcmSCU.h>
 
 #include "dcmtk/oflog/oflog.h"
 
@@ -56,7 +56,9 @@ static ctkLogger logger("org.commontk.dicom.DICOMRetrieve");
 //------------------------------------------------------------------------------
 // A customized local implemenation of the DcmSCU so that Qt signals can be emitted
 // when retrieve results are obtained
-class ctkDICOMRetrieveSCUPrivate : public ctkDcmSCU
+class ctkDICOMRetrieveSCUPrivate
+//: public ctkDcmSCU
+: public DcmSCU
 {
 public:
   ctkDICOMRetrieve *retrieve;
@@ -76,7 +78,7 @@ public:
         {
         emit this->retrieve->progress("Got move request");
         emit this->retrieve->progress(0);
-        return this->ctkDcmSCU::handleMOVEResponse(
+        return this->DcmSCU::handleMOVEResponse(
                         presID, response, waitForNextResponse);
         }
       return false;
@@ -104,7 +106,7 @@ public:
           }
         else
           {
-          return this->ctkDcmSCU::handleSTORERequest(
+          return this->DcmSCU::handleSTORERequest(
                           presID, incomingObject, continueCGETSession, cStoreReturnStatus);
           }
         }
@@ -122,7 +124,7 @@ public:
         emit this->retrieve->progress("Got CGET response");
         emit this->retrieve->progress(0);
         continueCGETSession = !this->retrieve->wasCanceled();
-        return this->ctkDcmSCU::handleCGETResponse(presID, response, continueCGETSession);
+        return this->DcmSCU::handleCGETResponse(presID, response, continueCGETSession);
         }
       return false;
     };

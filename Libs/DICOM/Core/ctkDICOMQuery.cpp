@@ -49,15 +49,17 @@
 
 // NOTE: using ctk stand-in class for now - switch back
 // to dcmtk's scu.h when cget support is in a release version
-//#include <dcmtk/dcmnet/scu.h>
-#include <ctkDcmSCU.h>
+#include <dcmtk/dcmnet/scu.h>
+//#include <ctkDcmSCU.h>
 
 static ctkLogger logger ( "org.commontk.dicom.DICOMQuery" );
 
 //------------------------------------------------------------------------------
 // A customized implemenation so that Qt signals can be emitted
 // when query results are obtained
-class ctkDICOMQuerySCUPrivate : public ctkDcmSCU
+class ctkDICOMQuerySCUPrivate
+//  : public ctkDcmSCU
+  : public DcmSCU
 {
 public:
   ctkDICOMQuery *query;
@@ -74,7 +76,7 @@ public:
         {
         logger.debug ( "FIND RESPONSE" );
         emit this->query->debug("Got a find response!");
-        return this->ctkDcmSCU::handleFINDResponse(presID, response, waitForNextResponse);
+        return this->DcmSCU::handleFINDResponse(presID, response, waitForNextResponse);
         }
       return DIMSE_NULLKEY;
     };
