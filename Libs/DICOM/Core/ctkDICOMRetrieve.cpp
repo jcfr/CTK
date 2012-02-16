@@ -81,7 +81,7 @@ public:
         return this->DcmSCU::handleMOVEResponse(
                         presID, response, waitForNextResponse);
         }
-      return false;
+      return EC_IllegalParameter;
     };
 
   // called when a data set is coming in from a server in
@@ -102,7 +102,7 @@ public:
         if (this->retrieve && this->retrieve->database())
           {
           this->retrieve->database()->insert(incomingObject);
-          return ECC_Normal;
+          return EC_Normal;
           }
         else
           {
@@ -110,7 +110,7 @@ public:
                           presID, incomingObject, continueCGETSession, cStoreReturnStatus);
           }
         }
-      return false;
+      return EC_IllegalParameter;
     };
 
   // called when status information from remote server
@@ -126,7 +126,7 @@ public:
         continueCGETSession = !this->retrieve->wasCanceled();
         return this->DcmSCU::handleCGETResponse(presID, response, continueCGETSession);
         }
-      return false;
+      return EC_IllegalParameter;
     };
 };
 
