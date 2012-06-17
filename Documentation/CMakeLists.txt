@@ -4,12 +4,13 @@ if( DOXYGEN_FOUND )
   if( DOXYGEN_DOT_FOUND )
 
     # Compile a doxygen input filter for processing CMake scripts
+    set(CTK_CMAKE_DOXYGEN_FILTER_SRC "${CTK_SOURCE_DIR}/Documentation/CMakeDoxygenFilter.cpp" CACHE INTERNAL "CMake doxygen filter")
     include(ctkFunctionCMakeDoxygenFilterCompile)
     ctkFunctionCMakeDoxygenFilterCompile(NAMESPACE "CMake")
 
     # Automatically generate documentation at build time
     set(all_arg)
-    IF (DOCUMENTATION_TARGET_IN_ALL)
+    if(DOCUMENTATION_TARGET_IN_ALL)
       set(all_arg "ALL")
     endif()
 

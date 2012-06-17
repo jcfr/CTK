@@ -159,6 +159,9 @@ foreach(varname ${CTK_SUPERBUILD_EP_VARNAMES})
 set(CTK_${varname} \"${${varname}}\")")
 endforeach()
 
+# CMake doxygen filter
+set(CTK_CMAKE_DOXYGEN_FILTER_SRC_CONFIG ${CTK_CMAKE_DOXYGEN_FILTER_SRC})
+
 # Executable locations.
 
 # CMake extension module directory.

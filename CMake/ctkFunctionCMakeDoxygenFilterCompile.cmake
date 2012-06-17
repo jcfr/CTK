@@ -69,11 +69,13 @@ function(ctkFunctionCMakeDoxygenFilterCompile)
     set(compile_defs "${compile_defs} -DUSE_NAMESPACE=${FILTER_NAMESPACE}")
   endif()
 
-  set(cmake_doxygen_filter_src "${CTK_SOURCE_DIR}/Documentation/CMakeDoxygenFilter.cpp")
+  if(NOT EXISTS ${CTK_CMAKE_DOXYGEN_FILTER_SRC})
+    message(FATAL_ERROR "error: CTK_CMAKE_DOXYGEN_FILTER_SRC is set to a nonexistent file: ${CTK_CMAKE_DOXYGEN_FILTER_SRC}")
+  endif()
 
   try_compile(result_var
               "${CMAKE_CURRENT_BINARY_DIR}"
-              "${cmake_doxygen_filter_src}"
+              "${CTK_CMAKE_DOXYGEN_FILTER_SRC}"
               COMPILE_DEFINITIONS ${compile_defs}
               OUTPUT_VARIABLE compile_output
               COPY_FILE ${copy_file}

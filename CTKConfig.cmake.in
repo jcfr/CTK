@@ -59,6 +59,7 @@ INCLUDE("@CTK_CMAKE_DIR_CONFIG@/ctkMacroBuildQtPlugin.cmake")
 INCLUDE("@CTK_CMAKE_DIR_CONFIG@/ctkMacroTargetLibraries.cmake") # Import multiple macros
 INCLUDE("@CTK_CMAKE_DIR_CONFIG@/ctkFunctionExtractOptionNameAndValue.cmake")
 INCLUDE("@CTK_CMAKE_DIR_CONFIG@/ctkMacroValidateBuildOptions.cmake")
+INCLUDE("@CTK_CMAKE_DIR_CONFIG@/ctkFunctionCMakeDoxygenFilterCompile.cmake")
 INCLUDE("@CTK_CMAKE_DIR_CONFIG@/ctkFunctionGenerateDGraphInput.cmake")
 INCLUDE("@CTK_CMAKE_DIR_CONFIG@/ctkFunctionGeneratePluginManifest.cmake")
 INCLUDE("@CTK_CMAKE_DIR_CONFIG@/ctkFunctionGeneratePluginUseFile.cmake")
@@ -162,6 +163,7 @@ SET(CTK_CMAKE_UTILITIES_DIR "@CTK_CMAKE_UTILITIES_DIR_CONFIG@")
 
 # TODO The Doxygen configuration.
 #SET(CTK_DOXYGEN_HOME "@CTK_DOXYGEN_HOME_CONFIG@")
+set(CTK_CMAKE_DOXYGEN_FILTER_SRC "@CTK_CMAKE_DOXYGEN_FILTER_SRC_CONFIG@")
 
 # TODO Relative install paths in the CTK install tree
 SET(CTK_INSTALL_BIN_DIR "@CTK_INSTALL_BIN_DIR@")
