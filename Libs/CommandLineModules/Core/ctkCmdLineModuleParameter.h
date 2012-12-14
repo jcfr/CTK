@@ -230,5 +230,6 @@ private:
 };
 
 CTK_CMDLINEMODULECORE_EXPORT QTextStream& operator<<(QTextStream& os, const ctkCmdLineModuleParameter& parameter);
+CTK_CMDLINEMODULECORE_EXPORT QDebug operator<<(QDebug dbg, const ctkCmdLineModuleParameter &parameter);
 
 #endif

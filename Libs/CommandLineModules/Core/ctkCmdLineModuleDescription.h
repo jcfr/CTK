@@ -148,5 +148,6 @@ private:
 };
 
 CTK_CMDLINEMODULECORE_EXPORT QTextStream & operator<<(QTextStream& os, const ctkCmdLineModuleDescription& module);
+CTK_CMDLINEMODULECORE_EXPORT QDebug operator<<(QDebug dbg, const ctkCmdLineModuleDescription &description);
 
 #endif

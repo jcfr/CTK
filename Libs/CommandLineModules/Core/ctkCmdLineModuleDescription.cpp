@@ -26,6 +26,7 @@ limitations under the License.
 
 #include "ctkException.h"
 
+#include <QDebug>
 #include <QTextStream>
 
 
@@ -181,4 +182,15 @@ QTextStream & operator<<(QTextStream &os, const ctkCmdLineModuleDescription &mod
     os << group;
   }
   return os;
+}
+
+//----------------------------------------------------------------------------
+QDebug operator<<(QDebug dbg, const ctkCmdLineModuleDescription &description)
+{
+  QString str;
+  QTextStream stream(&str);
+  stream << description;
+  dbg.nospace() << str;
+
+  return dbg.space();
 }

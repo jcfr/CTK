@@ -22,6 +22,7 @@ limitations under the License.
 
 #include "ctkCmdLineModuleParameter_p.h"
 
+#include <QDebug>
 #include <QStringList>
 #include <QTextStream>
 
@@ -294,4 +295,15 @@ QTextStream& operator<<(QTextStream& os, const ctkCmdLineModuleParameter& parame
   os << "      " << "FileExtensions: " << parameter.fileExtensionsAsString() << '\n';
   os << "      " << "CoordinateSystem: " << parameter.coordinateSystem() << '\n';
   return os;
+}
+
+//----------------------------------------------------------------------------
+QDebug operator<<(QDebug dbg, const ctkCmdLineModuleParameter &parameter)
+{
+  QString str;
+  QTextStream stream(&str);
+  stream << parameter;
+  dbg.nospace() << str;
+
+  return dbg.space();
 }
