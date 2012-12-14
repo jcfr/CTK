@@ -53,7 +53,6 @@ public:
 
   ctkCmdLineModuleDescription& operator=(const ctkCmdLineModuleDescription& other);
 
-  static ctkCmdLineModuleDescription parse(QIODevice* input);
 
   /**
    * @brief Returns the category, derived from the \code <category> \endcode tag.
