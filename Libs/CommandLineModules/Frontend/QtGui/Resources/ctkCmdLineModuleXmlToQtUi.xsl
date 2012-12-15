@@ -46,10 +46,8 @@
   <xsl:param name="transformOutputWidget">ctkPathLineEdit</xsl:param>
   <xsl:param name="tableInputWidget">ctkPathLineEdit</xsl:param>
   <xsl:param name="tableOutputWidget">ctkPathLineEdit</xsl:param>
-  <!--
   <xsl:param name="measurementInputWidget">ctkPathLineEdit</xsl:param>
   <xsl:param name="measurementOutputWidget">ctkPathLineEdit</xsl:param>
-  -->
   <xsl:param name="directoryWidget">ctkPathLineEdit</xsl:param>
   <xsl:param name="pointWidget">ctkCoordinatesWidget</xsl:param>
   <xsl:param name="unsupportedWidget">QLabel</xsl:param>
@@ -70,10 +68,8 @@
   <xsl:param name="transformOutputValueProperty">currentPath</xsl:param>
   <xsl:param name="tableInputValueProperty">currentPath</xsl:param>
   <xsl:param name="tableOutputValueProperty">currentPath</xsl:param>
-  <!--
   <xsl:param name="measurementInputValueProperty">currentPath</xsl:param>
   <xsl:param name="measurementOutputValueProperty">currentPath</xsl:param>
-  -->
   <xsl:param name="vectorValueProperty">text</xsl:param>
   <xsl:param name="enumerationValueProperty">currentEnumeration</xsl:param>
 
@@ -87,10 +83,9 @@
   <xsl:param name="transformOutputSetProperty">filters</xsl:param>
   <xsl:param name="tableInputSetProperty">filters</xsl:param>
   <xsl:param name="tableOutputSetProperty">filters</xsl:param>
-  <!--
   <xsl:param name="measurementInputSetProperty">filters</xsl:param>
   <xsl:param name="measurementOutputSetProperty">filters</xsl:param>
-  -->
+
   <xsl:param name="imageInputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Readable</xsl:param>
   <xsl:param name="imageOutputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Writable</xsl:param>
   <xsl:param name="fileInputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Readable</xsl:param>
@@ -101,10 +96,8 @@
   <xsl:param name="transformOutputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Writable</xsl:param>
   <xsl:param name="tableInputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Readable</xsl:param>
   <xsl:param name="tableOutputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Writable</xsl:param>
-  <!--
   <xsl:param name="measurementInputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Readable</xsl:param>
   <xsl:param name="measurementOutputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Writable</xsl:param>
-  -->
 
   <!--
   ===================================================================
@@ -119,7 +112,7 @@
       <xsl:when test="$cliType='boolean'">bool</xsl:when>
       <xsl:when test="$cliType='integer'">number</xsl:when>
       <xsl:when test="$cliType='float'">double</xsl:when>
-      <xsl:when test="$cliType=('point', 'region', 'image', 'file', 'directory', 'geometry', 'transform', 'table', 'integer-vector', 'double-vector', 'float-vector', 'string-vector', 'integer-enumeration', 'double-enumeration', 'float-enumeration', 'string-enumeration')">string</xsl:when>
+      <xsl:when test="$cliType=('point', 'region', 'image', 'file', 'directory', 'geometry', 'transform', 'table', 'measurement', 'integer-vector', 'double-vector', 'float-vector', 'string-vector', 'integer-enumeration', 'double-enumeration', 'float-enumeration', 'string-enumeration')">string</xsl:when>
       <xsl:otherwise><xsl:value-of select="$cliType"/></xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -148,18 +141,14 @@
       <xsl:when test="$cliType='transform' and $cliChannel='output'"><xsl:value-of select="$transformOutputValueProperty"/></xsl:when>
       <xsl:when test="$cliType='table' and $cliChannel='input'"><xsl:value-of select="$tableInputValueProperty"/></xsl:when>
       <xsl:when test="$cliType='table' and $cliChannel='output'"><xsl:value-of select="$tableOutputValueProperty"/></xsl:when>
-      <!--
       <xsl:when test="$cliType='measurement' and $cliChannel='input'"><xsl:value-of select="$measurementInputValueProperty"/></xsl:when>
       <xsl:when test="$cliType='measurement' and $cliChannel='output'"><xsl:value-of select="$measurementOutputValueProperty"/></xsl:when>
-      -->
-      <xsl:when test="$cliType='integer-vector'"><xsl:value-of select="$vectorValueProperty"/></xsl:when>
-      <xsl:when test="$cliType='double-vector'"><xsl:value-of select="$vectorValueProperty"/></xsl:when>
-      <xsl:when test="$cliType='float-vector'"><xsl:value-of select="$vectorValueProperty"/></xsl:when>
-      <xsl:when test="$cliType='string-vector'"><xsl:value-of select="$vectorValueProperty"/></xsl:when>
-      <xsl:when test="$cliType='integer-enumeration'"><xsl:value-of select="$enumerationValueProperty"/></xsl:when>
-      <xsl:when test="$cliType='double-enumeration'"><xsl:value-of select="$enumerationValueProperty"/></xsl:when>
-      <xsl:when test="$cliType='float-enumeration'"><xsl:value-of select="$enumerationValueProperty"/></xsl:when>
-      <xsl:when test="$cliType='string-enumeration'"><xsl:value-of select="$enumerationValueProperty"/></xsl:when>
+      <xsl:when test="$cliType='integer-vector' or $cliType='double-vector' or $cliType='float-vector' or $cliType='string-vector'">
+        <xsl:value-of select="$vectorValueProperty"/>
+      </xsl:when>
+      <xsl:when test="$cliType='integer-enumeration' or $cliType='double-enumeration' or $cliType='float-enumeration' or $cliType='string-enumeration'">
+        <xsl:value-of select="$enumerationValueProperty"/>
+      </xsl:when>
       <xsl:otherwise>value</xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -653,7 +642,7 @@
     Measurement parameter (default: ctkPathLineEdit)
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-  <!--
+
   <xsl:template match="parameters/*[name()=('measurement')]">
     <xsl:call-template name="gridItemWithLabel"/>
     <item  row="{position()-1}" column="1">
@@ -683,7 +672,7 @@
       </xsl:choose>
     </item>
   </xsl:template>
-  -->
+
   <!--
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     DIRECTORY parameter (default: ctkPathLineEdit)

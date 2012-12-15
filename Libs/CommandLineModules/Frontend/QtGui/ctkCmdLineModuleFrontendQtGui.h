@@ -89,6 +89,8 @@ struct ctkCmdLineModuleFrontendQtGuiPrivate;
  * <tr><td>transform (output channel)</td><td>transformOutputWidget</td><td>ctkPathLineEdit</td><td>transformOutputValueProperty</td><td>currentPath</td></tr>
  * <tr><td>table (input channel)</td><td>tableInputWidget</td><td>ctkPathLineEdit</td><td>tableInputValueProperty</td><td>currentPath</td></tr>
  * <tr><td>table (output channel)</td><td>tableOutputWidget</td><td>ctkPathLineEdit</td><td>tableOutputValueProperty</td><td>currentPath</td></tr>
+ * <tr><td>measurement (input channel)</td><td>measurementInputWidget</td><td>ctkPathLineEdit</td><td>measurementInputValueProperty</td><td>currentPath</td></tr>
+ * <tr><td>measurement (output channel)</td><td>measurementOutputWidget</td><td>ctkPathLineEdit</td><td>measurementOutputValueProperty</td><td>currentPath</td></tr>
  * <tr><td>directory</td><td>directoryWidget</td><td>ctkPathLineEdit</td><td>directoryValueProperty</td><td>currentPath</td></tr>
  * <tr><td>point</td><td>pointWidget</td><td>ctkCoordinatesWidget</td><td>pointValueProperty</td><td>coordinates</td></tr>
  * <tr><td>region</td><td>pointWidget</td><td>ctkCoordinatesWidget</td><td>pointValueProperty</td><td>coordinates</td></tr>
@@ -126,6 +128,8 @@ struct ctkCmdLineModuleFrontendQtGuiPrivate;
  * <tr><td>transform (output channel)</td><td>transformOutputSetProperty</td><td>filters</td><td>transformOutputSetProperty</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Writable</td></tr>
  * <tr><td>table (input channel)</td><td>tableInputSetProperty</td><td>filters</td><td>tableInputSetProperty</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Readable</td></tr>
  * <tr><td>table (output channel)</td><td>tableOutputSetProperty</td><td>filters</td><td>tableOutputSetProperty</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Writable</td></tr>
+ * <tr><td>measurement (input channel)</td><td>measurementInputSetProperty</td><td>filters</td><td>measurementInputSetProperty</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Readable</td></tr>
+ * <tr><td>measurement (output channel)</td><td>measurementOutputSetProperty</td><td>filters</td><td>measurementOutputSetProperty</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Writable</td></tr>
  * </table>
  * \endhtmlonly
  */
