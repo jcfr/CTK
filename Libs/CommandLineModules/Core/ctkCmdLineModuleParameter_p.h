@@ -55,6 +55,7 @@ struct ctkCmdLineModuleParameterPrivate : public QSharedData
   QStringList FileExtensions;
   QString CoordinateSystem;
   QStringList Elements;
+  QString Reference;
   QString FlagAliasesAsString;
   QString DeprecatedFlagAliasesAsString;
   QString LongFlagAliasesAsString;

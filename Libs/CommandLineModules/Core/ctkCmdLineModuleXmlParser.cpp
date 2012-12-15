@@ -70,6 +70,9 @@ ctkCmdLineModuleXmlParser::ctkCmdLineModuleXmlParser(QIODevice* device,
   _paramParsers["directory"] = new ctkCmdLineModuleMultipleParameterParser; // type="multipleType"/>
   _paramParsers["image"] = new ctkCmdLineModuleImageParameterParser; // type="imageType"/>
   _paramParsers["geometry"] = new ctkCmdLineModuleGeometryParameterParser; // type="geometryType"/>
+  _paramParsers["transform"] = new ctkCmdLineModuleGeometryParameterParser; // type="transformType"/>
+  _paramParsers["table"] = new ctkCmdLineModuleTableParameterParser; // type="tableType"/>
+  _paramParsers["measurement"] = new ctkCmdLineModuleMeasurementParameterParser; // type="measurementType"/>
 }
 
 // ----------------------------------------------------------------------------

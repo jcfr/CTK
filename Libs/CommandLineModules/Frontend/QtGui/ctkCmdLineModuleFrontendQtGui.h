@@ -85,6 +85,10 @@ struct ctkCmdLineModuleFrontendQtGuiPrivate;
  * <tr><td>file (output channel)</td><td>fileOutputWidget</td><td>ctkPathLineEdit</td><td>fileOutputValueProperty</td><td>currentPath</td></tr>
  * <tr><td>geometry (input channel)</td><td>geometryInputWidget</td><td>ctkPathLineEdit</td><td>geometryInputValueProperty</td><td>currentPath</td></tr>
  * <tr><td>geometry (output channel)</td><td>geometryOutputWidget</td><td>ctkPathLineEdit</td><td>geometryOutputValueProperty</td><td>currentPath</td></tr>
+ * <tr><td>transform (input channel)</td><td>transformInputWidget</td><td>ctkPathLineEdit</td><td>transformInputValueProperty</td><td>currentPath</td></tr>
+ * <tr><td>transform (output channel)</td><td>transformOutputWidget</td><td>ctkPathLineEdit</td><td>transformOutputValueProperty</td><td>currentPath</td></tr>
+ * <tr><td>table (input channel)</td><td>tableInputWidget</td><td>ctkPathLineEdit</td><td>tableInputValueProperty</td><td>currentPath</td></tr>
+ * <tr><td>table (output channel)</td><td>tableOutputWidget</td><td>ctkPathLineEdit</td><td>tableOutputValueProperty</td><td>currentPath</td></tr>
  * <tr><td>directory</td><td>directoryWidget</td><td>ctkPathLineEdit</td><td>directoryValueProperty</td><td>currentPath</td></tr>
  * <tr><td>point</td><td>pointWidget</td><td>ctkCoordinatesWidget</td><td>pointValueProperty</td><td>coordinates</td></tr>
  * <tr><td>region</td><td>pointWidget</td><td>ctkCoordinatesWidget</td><td>pointValueProperty</td><td>coordinates</td></tr>
@@ -118,6 +122,10 @@ struct ctkCmdLineModuleFrontendQtGuiPrivate;
  * <tr><td>geometry (output channel)</td><td>geometryOutputSetProperty</td><td>filters</td><td>geometryOutputSetValue</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Writable</td></tr>
  * <tr><td>image (input channel)</td><td>imageInputSetProperty</td><td>filters</td><td>imageInputSetProperty</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Readable</td></tr>
  * <tr><td>image (output channel)</td><td>imageOutputSetProperty</td><td>filters</td><td>imageOutputSetProperty</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Writable</td></tr>
+ * <tr><td>transform (input channel)</td><td>transformInputSetProperty</td><td>filters</td><td>transformInputSetProperty</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Readable</td></tr>
+ * <tr><td>transform (output channel)</td><td>transformOutputSetProperty</td><td>filters</td><td>transformOutputSetProperty</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Writable</td></tr>
+ * <tr><td>table (input channel)</td><td>tableInputSetProperty</td><td>filters</td><td>tableInputSetProperty</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Readable</td></tr>
+ * <tr><td>table (output channel)</td><td>tableOutputSetProperty</td><td>filters</td><td>tableOutputSetProperty</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Writable</td></tr>
  * </table>
  * \endhtmlonly
  */

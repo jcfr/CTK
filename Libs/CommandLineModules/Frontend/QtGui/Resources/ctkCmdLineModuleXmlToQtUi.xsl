@@ -40,6 +40,16 @@
   <xsl:param name="imageOutputWidget">ctkPathLineEdit</xsl:param>
   <xsl:param name="fileInputWidget">ctkPathLineEdit</xsl:param>
   <xsl:param name="fileOutputWidget">ctkPathLineEdit</xsl:param>
+  <xsl:param name="geometryInputWidget">ctkPathLineEdit</xsl:param>
+  <xsl:param name="geometryOutputWidget">ctkPathLineEdit</xsl:param>
+  <xsl:param name="transformInputWidget">ctkPathLineEdit</xsl:param>
+  <xsl:param name="transformOutputWidget">ctkPathLineEdit</xsl:param>
+  <xsl:param name="tableInputWidget">ctkPathLineEdit</xsl:param>
+  <xsl:param name="tableOutputWidget">ctkPathLineEdit</xsl:param>
+  <!--
+  <xsl:param name="measurementInputWidget">ctkPathLineEdit</xsl:param>
+  <xsl:param name="measurementOutputWidget">ctkPathLineEdit</xsl:param>
+  -->
   <xsl:param name="directoryWidget">ctkPathLineEdit</xsl:param>
   <xsl:param name="pointWidget">ctkCoordinatesWidget</xsl:param>
   <xsl:param name="unsupportedWidget">QLabel</xsl:param>
@@ -56,6 +66,14 @@
   <xsl:param name="directoryValueProperty">currentPath</xsl:param>
   <xsl:param name="geometryInputValueProperty">currentPath</xsl:param>
   <xsl:param name="geometryOutputValueProperty">currentPath</xsl:param>
+  <xsl:param name="transformInputValueProperty">currentPath</xsl:param>
+  <xsl:param name="transformOutputValueProperty">currentPath</xsl:param>
+  <xsl:param name="tableInputValueProperty">currentPath</xsl:param>
+  <xsl:param name="tableOutputValueProperty">currentPath</xsl:param>
+  <!--
+  <xsl:param name="measurementInputValueProperty">currentPath</xsl:param>
+  <xsl:param name="measurementOutputValueProperty">currentPath</xsl:param>
+  -->
   <xsl:param name="vectorValueProperty">text</xsl:param>
   <xsl:param name="enumerationValueProperty">currentEnumeration</xsl:param>
 
@@ -63,11 +81,31 @@
   <xsl:param name="imageOutputSetProperty">filters</xsl:param>
   <xsl:param name="fileInputSetProperty">filters</xsl:param>
   <xsl:param name="fileOutputSetProperty">filters</xsl:param>
+  <xsl:param name="geometryInputSetProperty">filters</xsl:param>
+  <xsl:param name="geometryOutputSetProperty">filters</xsl:param>
+  <xsl:param name="transformInputSetProperty">filters</xsl:param>
+  <xsl:param name="transformOutputSetProperty">filters</xsl:param>
+  <xsl:param name="tableInputSetProperty">filters</xsl:param>
+  <xsl:param name="tableOutputSetProperty">filters</xsl:param>
+  <!--
+  <xsl:param name="measurementInputSetProperty">filters</xsl:param>
+  <xsl:param name="measurementOutputSetProperty">filters</xsl:param>
+  -->
   <xsl:param name="imageInputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Readable</xsl:param>
   <xsl:param name="imageOutputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Writable</xsl:param>
   <xsl:param name="fileInputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Readable</xsl:param>
   <xsl:param name="fileOutputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Writable</xsl:param>
-  
+  <xsl:param name="geometryInputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Readable</xsl:param>
+  <xsl:param name="geometryOutputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Writable</xsl:param>
+  <xsl:param name="transformInputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Readable</xsl:param>
+  <xsl:param name="transformOutputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Writable</xsl:param>
+  <xsl:param name="tableInputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Readable</xsl:param>
+  <xsl:param name="tableOutputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Writable</xsl:param>
+  <!--
+  <xsl:param name="measurementInputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Readable</xsl:param>
+  <xsl:param name="measurementOutputSetValue">ctkPathLineEdit::Files|ctkPathLineEdit::Writable</xsl:param>
+  -->
+
   <!--
   ===================================================================
     Utility XSLT 2.0 functions
@@ -81,7 +119,7 @@
       <xsl:when test="$cliType='boolean'">bool</xsl:when>
       <xsl:when test="$cliType='integer'">number</xsl:when>
       <xsl:when test="$cliType='float'">double</xsl:when>
-      <xsl:when test="$cliType=('point', 'region', 'image', 'file', 'directory', 'geometry', 'integer-vector', 'double-vector', 'float-vector', 'string-vector', 'integer-enumeration', 'double-enumeration', 'float-enumeration', 'string-enumeration')">string</xsl:when>
+      <xsl:when test="$cliType=('point', 'region', 'image', 'file', 'directory', 'geometry', 'transform', 'table', 'integer-vector', 'double-vector', 'float-vector', 'string-vector', 'integer-enumeration', 'double-enumeration', 'float-enumeration', 'string-enumeration')">string</xsl:when>
       <xsl:otherwise><xsl:value-of select="$cliType"/></xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -105,7 +143,15 @@
       <xsl:when test="$cliType='file' and $cliChannel='output'"><xsl:value-of select="$fileOutputValueProperty"/></xsl:when>
       <xsl:when test="$cliType='directory'"><xsl:value-of select="$directoryValueProperty"/></xsl:when>
       <xsl:when test="$cliType='geometry' and $cliChannel='input'"><xsl:value-of select="$geometryInputValueProperty"/></xsl:when>
-      <xsl:when test="$cliType='geometry' and $cliChannel='output'"><xsl:value-of select="$geometryOutputValueProperty"/></xsl:when>      
+      <xsl:when test="$cliType='geometry' and $cliChannel='output'"><xsl:value-of select="$geometryOutputValueProperty"/></xsl:when>
+      <xsl:when test="$cliType='transform' and $cliChannel='input'"><xsl:value-of select="$transformInputValueProperty"/></xsl:when>
+      <xsl:when test="$cliType='transform' and $cliChannel='output'"><xsl:value-of select="$transformOutputValueProperty"/></xsl:when>
+      <xsl:when test="$cliType='table' and $cliChannel='input'"><xsl:value-of select="$tableInputValueProperty"/></xsl:when>
+      <xsl:when test="$cliType='table' and $cliChannel='output'"><xsl:value-of select="$tableOutputValueProperty"/></xsl:when>
+      <!--
+      <xsl:when test="$cliType='measurement' and $cliChannel='input'"><xsl:value-of select="$measurementInputValueProperty"/></xsl:when>
+      <xsl:when test="$cliType='measurement' and $cliChannel='output'"><xsl:value-of select="$measurementOutputValueProperty"/></xsl:when>
+      -->
       <xsl:when test="$cliType='integer-vector'"><xsl:value-of select="$vectorValueProperty"/></xsl:when>
       <xsl:when test="$cliType='double-vector'"><xsl:value-of select="$vectorValueProperty"/></xsl:when>
       <xsl:when test="$cliType='float-vector'"><xsl:value-of select="$vectorValueProperty"/></xsl:when>
@@ -460,11 +506,11 @@
 
   <!--
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    FILE, GEOMETRY parameter (default: ctkPathLineEdit)
+    FILE parameter (default: ctkPathLineEdit)
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
 
-  <xsl:template match="parameters/*[name()=('file', 'geometry')]">
+  <xsl:template match="parameters/*[name()=('file')]">
     <xsl:call-template name="gridItemWithLabel"/>
     <item  row="{position()-1}" column="1">
       <xsl:choose>
@@ -494,6 +540,150 @@
     </item>
   </xsl:template>
 
+  <!--
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    GEOMETRY parameter (default: ctkPathLineEdit)
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <xsl:template match="parameters/*[name()=('geometry')]">
+    <xsl:call-template name="gridItemWithLabel"/>
+    <item  row="{position()-1}" column="1">
+      <xsl:choose>
+        <xsl:when test="channel = 'input'">
+          <widget class="{$geometryInputWidget}"  name="parameter:{name}">
+            <xsl:call-template name="commonWidgetProperties"/>
+            <xsl:call-template name="createQtDesignerStringListProperty"/>
+            <xsl:if test="$geometryInputSetProperty != ''">
+              <property name="{$geometryInputSetProperty}">
+                <set><xsl:value-of select="$geometryInputSetValue"/></set>
+              </property>
+            </xsl:if>
+          </widget>
+        </xsl:when>
+        <xsl:otherwise>
+          <widget class="{$geometryOutputWidget}"  name="parameter:{name}">
+            <xsl:call-template name="commonWidgetProperties"/>
+            <xsl:call-template name="createQtDesignerStringListProperty"/>
+            <xsl:if test="$geometryOutputSetProperty != ''">
+              <property name="{$geometryOutputSetProperty}">
+                <set><xsl:value-of select="$geometryOutputSetValue"/></set>
+              </property>
+            </xsl:if>
+          </widget>
+        </xsl:otherwise>
+      </xsl:choose>
+    </item>
+  </xsl:template>
+
+  <!--
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Transform parameter (default: ctkPathLineEdit)
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <xsl:template match="parameters/*[name()=('transform')]">
+    <xsl:call-template name="gridItemWithLabel"/>
+    <item  row="{position()-1}" column="1">
+      <xsl:choose>
+        <xsl:when test="channel = 'input'">
+          <widget class="{$transformInputWidget}"  name="parameter:{name}">
+            <xsl:call-template name="commonWidgetProperties"/>
+            <xsl:call-template name="createQtDesignerStringListProperty"/>
+            <xsl:if test="$transformInputSetProperty != ''">
+              <property name="{$transformInputSetProperty}">
+                <set><xsl:value-of select="$transformInputSetValue"/></set>
+              </property>
+            </xsl:if>
+          </widget>
+        </xsl:when>
+        <xsl:otherwise>
+          <widget class="{$transformOutputWidget}"  name="parameter:{name}">
+            <xsl:call-template name="commonWidgetProperties"/>
+            <xsl:call-template name="createQtDesignerStringListProperty"/>
+            <xsl:if test="$transformOutputSetProperty != ''">
+              <property name="{$transformOutputSetProperty}">
+                <set><xsl:value-of select="$transformOutputSetValue"/></set>
+              </property>
+            </xsl:if>
+          </widget>
+        </xsl:otherwise>
+      </xsl:choose>
+    </item>
+  </xsl:template>
+
+  <!--
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Table parameter (default: ctkPathLineEdit)
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <xsl:template match="parameters/*[name()=('table')]">
+    <xsl:call-template name="gridItemWithLabel"/>
+    <item  row="{position()-1}" column="1">
+      <xsl:choose>
+        <xsl:when test="channel = 'input'">
+          <widget class="{$tableInputWidget}"  name="parameter:{name}">
+            <xsl:call-template name="commonWidgetProperties"/>
+            <xsl:call-template name="createQtDesignerStringListProperty"/>
+            <xsl:if test="$tableInputSetProperty != ''">
+              <property name="{$tableInputSetProperty}">
+                <set><xsl:value-of select="$tableInputSetValue"/></set>
+              </property>
+            </xsl:if>
+          </widget>
+        </xsl:when>
+        <xsl:otherwise>
+          <widget class="{$tableOutputWidget}"  name="parameter:{name}">
+            <xsl:call-template name="commonWidgetProperties"/>
+            <xsl:call-template name="createQtDesignerStringListProperty"/>
+            <xsl:if test="$tableOutputSetProperty != ''">
+              <property name="{$tableOutputSetProperty}">
+                <set><xsl:value-of select="$tableOutputSetValue"/></set>
+              </property>
+            </xsl:if>
+          </widget>
+        </xsl:otherwise>
+      </xsl:choose>
+    </item>
+  </xsl:template>
+
+  <!--
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Measurement parameter (default: ctkPathLineEdit)
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+  <!--
+  <xsl:template match="parameters/*[name()=('measurement')]">
+    <xsl:call-template name="gridItemWithLabel"/>
+    <item  row="{position()-1}" column="1">
+      <xsl:choose>
+        <xsl:when test="channel = 'input'">
+          <widget class="{$measurementInputWidget}"  name="parameter:{name}">
+            <xsl:call-template name="commonWidgetProperties"/>
+            <xsl:call-template name="createQtDesignerStringListProperty"/>
+            <xsl:if test="$measurementInputSetProperty != ''">
+              <property name="{$measurementInputSetProperty}">
+                <set><xsl:value-of select="$measurementInputSetValue"/></set>
+              </property>
+            </xsl:if>
+          </widget>
+        </xsl:when>
+        <xsl:otherwise>
+          <widget class="{$measurementOutputWidget}"  name="parameter:{name}">
+            <xsl:call-template name="commonWidgetProperties"/>
+            <xsl:call-template name="createQtDesignerStringListProperty"/>
+            <xsl:if test="$measurementOutputSetProperty != ''">
+              <property name="{$measurementOutputSetProperty}">
+                <set><xsl:value-of select="$measurementOutputSetValue"/></set>
+              </property>
+            </xsl:if>
+          </widget>
+        </xsl:otherwise>
+      </xsl:choose>
+    </item>
+  </xsl:template>
+  -->
   <!--
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     DIRECTORY parameter (default: ctkPathLineEdit)

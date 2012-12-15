@@ -266,6 +266,46 @@ protected:
   }
 };
 
+class ctkCmdLineModuleTransformParameterParser : public ctkCmdLineModuleMultipleParameterParser
+{
+
+protected:
+
+  void handleAttributes(ctkCmdLineModuleParameterPrivate* moduleParamPrivate, QXmlStreamReader& xmlReader)
+  {
+    ctkCmdLineModuleMultipleParameterParser::handleAttributes(moduleParamPrivate, xmlReader);
+    moduleParamPrivate->setFileExtensionsAsString(xmlReader.attributes().value("fileExtensions").toString().trimmed());
+    moduleParamPrivate->Reference = xmlReader.attributes().value("reference").toString().trimmed();
+    moduleParamPrivate->Type = xmlReader.attributes().value("type").toString().trimmed();
+  }
+};
+
+class ctkCmdLineModuleTableParameterParser : public ctkCmdLineModuleMultipleParameterParser
+{
+
+protected:
+
+  void handleAttributes(ctkCmdLineModuleParameterPrivate* moduleParamPrivate, QXmlStreamReader& xmlReader)
+  {
+    ctkCmdLineModuleMultipleParameterParser::handleAttributes(moduleParamPrivate, xmlReader);
+    moduleParamPrivate->Reference = xmlReader.attributes().value("reference").toString().trimmed();
+    moduleParamPrivate->Type = xmlReader.attributes().value("type").toString().trimmed();
+  }
+};
+
+class ctkCmdLineModuleMeasurementParameterParser : public ctkCmdLineModuleMultipleParameterParser
+{
+
+protected:
+
+  void handleAttributes(ctkCmdLineModuleParameterPrivate* moduleParamPrivate, QXmlStreamReader& xmlReader)
+  {
+    ctkCmdLineModuleMultipleParameterParser::handleAttributes(moduleParamPrivate, xmlReader);
+    moduleParamPrivate->Reference = xmlReader.attributes().value("reference").toString().trimmed();
+    moduleParamPrivate->Type = xmlReader.attributes().value("type").toString().trimmed();
+  }
+};
+
 class ctkCmdLineModuleImageParameterParser : public ctkCmdLineModuleMultipleParameterParser
 {
 

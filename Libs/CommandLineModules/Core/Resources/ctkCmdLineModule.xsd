@@ -165,11 +165,9 @@
         <xsd:element name="image" type="imageType"/>
         <xsd:element name="geometry" type="geometryType"/>
         
-        <!--
         <xsd:element name="transform" type="transformType"/>
         <xsd:element name="table" type="tableType"/>
         <xsd:element name="measurement" type="measurementType"/>
-        -->
         
       </xsd:choice>
       
@@ -270,7 +268,11 @@
     </xsd:sequence>
     
     <!-- parameter attributes -->
-    <xsd:attribute default="false" name="hidden" type="xsd:boolean"/>
+    <xsd:attribute default="false" name="hidden" type="xsd:boolean">
+      <xsd:annotation>
+        <xsd:documentation>Specifies the visibility.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
   </xsd:complexType>
 
   <!--
@@ -399,17 +401,12 @@
   <!--
   ===================================================================
     GEOMETRY PARAMETER 
-      Extends multipleType for geometry parameters (geometry).
+      Extends fileType for geometry parameters (geometry).
   ===================================================================
   -->
   <xsd:complexType name="geometryType">
     <xsd:complexContent>
-      <xsd:extension base="multipleType">
-        <xsd:attribute name="fileExtensions" type="xsd:string">
-          <xsd:annotation>
-            <xsd:documentation>A comma separated list of allowed file extensions.</xsd:documentation>
-          </xsd:annotation>
-        </xsd:attribute>
+      <xsd:extension base="fileType">
         <xsd:attribute name="type">
           <xsd:annotation>
             <xsd:documentation>Optionally specifies the allowed geometry type.</xsd:documentation>
@@ -421,6 +418,77 @@
             </xsd:restriction>
           </xsd:simpleType>
         </xsd:attribute>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!--
+  ===================================================================
+    TRANSFORM PARAMETER
+      Extends fileType for transform parameters (transform).
+  ===================================================================
+  -->
+  <xsd:complexType name="transformType">
+    <xsd:complexContent>
+      <xsd:extension base="fileType">
+        <xsd:attribute name="type">
+          <xsd:annotation>
+            <xsd:documentation>Optionally specifies the allowed transform type.</xsd:documentation>
+          </xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:enumeration value="linear"/>
+              <xsd:enumeration value="nonlinear"/>
+              <xsd:enumeration value="bspline"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:attribute>
+        <xsd:attribute name="reference">
+          <xsd:annotation>
+            <xsd:documentation>Optionally specifies the transform reference name.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!--
+  ===================================================================
+    TABLE PARAMETER
+      Extends multipleType for table parameters (table).
+  ===================================================================
+  -->
+  <xsd:complexType name="tableType">
+    <xsd:complexContent>
+      <xsd:extension base="multipleType">
+        <xsd:attribute name="type" use="required">
+          <xsd:annotation>
+            <xsd:documentation>Specifies the allowed table type.</xsd:documentation>
+          </xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:enumeration value="color"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:attribute>
+        <xsd:attribute name="reference" use="required">
+          <xsd:annotation>
+            <xsd:documentation>Specifies the transform reference name.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!--
+  ===================================================================
+    MEASUREMENT PARAMETER
+      Extends multipleType for measurement parameters (measurement).
+  ===================================================================
+  -->
+  <xsd:complexType name="measurementType">
+    <xsd:complexContent>
+      <xsd:extension base="multipleType">
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
