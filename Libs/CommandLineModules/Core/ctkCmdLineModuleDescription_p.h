@@ -29,8 +29,10 @@ class ctkCmdLineModuleParameterGroup;
 
 struct ctkCmdLineModuleDescriptionPrivate : public QSharedData
 {
+  ctkCmdLineModuleDescriptionPrivate() : Index(-1){}
   QString Title;
   QString Category;
+  int Index;
   QString Description;
   QString Version;
   QString DocumentationURL;

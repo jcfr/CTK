@@ -61,6 +61,11 @@ public:
   QString category() const;
 
   /**
+   * @brief Returns the index, derived from the \code <index> \endcode tag.
+   */
+  int index() const;
+
+  /**
    * @brief Returns the title, derived from the \code <title> \endcode tag.
    */
   QString title() const;

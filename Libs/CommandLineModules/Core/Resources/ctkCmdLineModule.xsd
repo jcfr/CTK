@@ -34,6 +34,14 @@
             The value can be a dot separated string to create category hierarchies.</xsd:documentation>
           </xsd:annotation>
         </xsd:element>
+
+        <xsd:element maxOccurs="1" minOccurs="0" name="index" type="xsd:nonNegativeInteger">
+          <xsd:annotation>
+            <xsd:documentation>Optionnally defines the position of the module in its category.
+            Modules are sorted first by index then alphabetically.
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
         
         <xsd:element maxOccurs="1" name="title" type="xsd:string">
           <xsd:annotation>

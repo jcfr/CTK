@@ -107,6 +107,10 @@ void ctkCmdLineModuleXmlParser::handleExecutableElement()
     {
       _md->d->Category = _xmlReader.readElementText().trimmed();
     }
+    else if (name.compare("index", Qt::CaseInsensitive) == 0)
+    {
+      _md->d->Index = _xmlReader.readElementText().toInt();
+    }
     else if (name.compare("title", Qt::CaseInsensitive) == 0)
     {
       _md->d->Title = _xmlReader.readElementText().trimmed();

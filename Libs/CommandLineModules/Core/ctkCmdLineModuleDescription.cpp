@@ -60,6 +60,12 @@ QString ctkCmdLineModuleDescription::category() const
 }
 
 //----------------------------------------------------------------------------
+int ctkCmdLineModuleDescription::index() const
+{
+  return d->Index;
+}
+
+//----------------------------------------------------------------------------
 QString ctkCmdLineModuleDescription::title() const
 {
   return d->Title;
