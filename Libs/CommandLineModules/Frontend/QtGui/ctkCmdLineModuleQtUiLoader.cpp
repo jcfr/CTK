@@ -60,8 +60,17 @@ public:
 };
 
 //-----------------------------------------------------------------------------
+struct ctkCmdLineModuleQtUiLoaderPrivate
+{
+  ctkCmdLineModuleQtUiLoaderPrivate()
+  {}
+
+  ctkCmdLineModuleDescription Description;
+};
+
+//-----------------------------------------------------------------------------
 ctkCmdLineModuleQtUiLoader::ctkCmdLineModuleQtUiLoader(QObject *parent)
-  : QUiLoader(parent)
+  : QUiLoader(parent), d_ptr(new ctkCmdLineModuleQtUiLoaderPrivate)
 {
 
 }
@@ -72,6 +81,19 @@ ctkCmdLineModuleQtUiLoader::~ctkCmdLineModuleQtUiLoader()
 
 }
 
+//-----------------------------------------------------------------------------
+ctkCmdLineModuleDescription ctkCmdLineModuleQtUiLoader::description()const
+{
+  Q_D(const ctkCmdLineModuleQtUiLoader);
+  return d->Description;
+}
+
+//-----------------------------------------------------------------------------
+void ctkCmdLineModuleQtUiLoader::setDescription(const ctkCmdLineModuleDescription& description)
+{
+  Q_D(ctkCmdLineModuleQtUiLoader);
+  d->Description = description;
+}
 
 //-----------------------------------------------------------------------------
 QWidget* ctkCmdLineModuleQtUiLoader::createWidget(const QString& className, QWidget* parent, const QString& name)

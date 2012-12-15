@@ -139,6 +139,7 @@ private:
 
   friend class ctkCmdLineModuleXmlParser;
   friend struct ctkCmdLineModuleReferencePrivate;
+  friend struct ctkCmdLineModuleQtUiLoaderPrivate;
 
   ctkCmdLineModuleDescription();
 

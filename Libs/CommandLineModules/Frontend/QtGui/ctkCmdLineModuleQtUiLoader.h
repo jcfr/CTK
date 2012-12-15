@@ -22,7 +22,10 @@
 #define CTKCMDLINEMODULEQTUILOADER_H
 
 #include <QUiLoader>
+#include "ctkCmdLineModuleDescription.h"
 #include "ctkCommandLineModulesFrontendQtGuiExport.h"
+
+struct ctkCmdLineModuleQtUiLoaderPrivate;
 
 /**
  * \class ctkCmdLineModuleQtUiLoader
@@ -47,7 +50,28 @@ public:
    */
   virtual QWidget* createWidget(const QString & className, QWidget * parent = 0, const QString & name = QString() );
 
+protected:
+
+  /**
+   * \brief Get the module description for the parameters.
+   * \return The XML description as a class representation.
+   */
+  ctkCmdLineModuleDescription description()const;
+
+  /**
+   * \brief Set the module description.
+   * \see ctkCmdLineModuleFrontendQtGui::uiLoader()
+   */
+  void setDescription(const ctkCmdLineModuleDescription& description);
+
 private:
+
+  friend class ctkCmdLineModuleFrontendQtGui;
+
+  QScopedPointer<ctkCmdLineModuleQtUiLoaderPrivate> d_ptr;
+
+  Q_DECLARE_PRIVATE(ctkCmdLineModuleQtUiLoader)
+  Q_DISABLE_COPY(ctkCmdLineModuleQtUiLoader)
 
 }; // end class
 

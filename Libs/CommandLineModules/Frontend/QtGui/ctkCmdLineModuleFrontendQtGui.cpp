@@ -28,7 +28,6 @@
 
 #include <QBuffer>
 #include <QFile>
-#include <QUiLoader>
 #include <QWidget>
 #include <QVariant>
 #include <QCoreApplication>
@@ -42,7 +41,7 @@ struct ctkCmdLineModuleFrontendQtGuiPrivate
     : Widget(NULL)
   {}
 
-  mutable QScopedPointer<QUiLoader> Loader;
+  mutable QScopedPointer<ctkCmdLineModuleQtUiLoader> Loader;
   mutable QScopedPointer<QIODevice> xslFile;
   mutable QScopedPointer<ctkCmdLineModuleXslTransform> Transform;
   mutable QWidget* Widget;
@@ -144,7 +143,9 @@ QObject* ctkCmdLineModuleFrontendQtGui::guiHandle() const
     return 0;
   }
 
-  QUiLoader* uiLoader = this->uiLoader();
+  ctkCmdLineModuleQtUiLoader* uiLoader = qobject_cast<ctkCmdLineModuleQtUiLoader*>(this->uiLoader());
+  Q_ASSERT(uiLoader);
+  uiLoader->setDescription(this->moduleReference().description());
 #ifdef CMAKE_INTDIR
   QString appPath = QCoreApplication::applicationDirPath();
   if (appPath.endsWith(CMAKE_INTDIR))
