@@ -22,12 +22,11 @@
 #include "ctkCmdLineModuleFrontendQtGui.h"
 
 #include "ctkCmdLineModuleReference.h"
-#include "ctkCmdLineModuleXslTransform.h"
 #include "ctkCmdLineModuleObjectTreeWalker_p.h"
 #include "ctkCmdLineModuleQtUiLoader.h"
+#include "ctkCmdLineModuleQtXslTransform.h"
 
 #include <QBuffer>
-#include <QFile>
 #include <QWidget>
 #include <QVariant>
 #include <QCoreApplication>
@@ -42,7 +41,6 @@ struct ctkCmdLineModuleFrontendQtGuiPrivate
   {}
 
   mutable QScopedPointer<ctkCmdLineModuleQtUiLoader> Loader;
-  mutable QScopedPointer<QIODevice> xslFile;
   mutable QScopedPointer<ctkCmdLineModuleXslTransform> Transform;
   mutable QWidget* Widget;
 
@@ -80,9 +78,7 @@ ctkCmdLineModuleXslTransform* ctkCmdLineModuleFrontendQtGui::xslTransform() cons
 {
   if (d->Transform == NULL)
   {
-    d->Transform.reset(new ctkCmdLineModuleXslTransform());
-    d->xslFile.reset(new QFile(":/ctkCmdLineModuleXmlToQtUi.xsl"));
-    d->Transform->setXslTransformation(d->xslFile.data());
+    d->Transform.reset(new ctkCmdLineModuleQtXslTransform());
   }
   return d->Transform.data();
 }

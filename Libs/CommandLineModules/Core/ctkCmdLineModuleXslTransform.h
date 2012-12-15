@@ -28,6 +28,8 @@
 class ctkCmdLineModuleXslTransformPrivate;
 
 // Qt includes
+#include <QList>
+#include <QVariant>
 class QIODevice;
 
 /**
