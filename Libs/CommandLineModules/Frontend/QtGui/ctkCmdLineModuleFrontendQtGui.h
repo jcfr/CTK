@@ -83,8 +83,8 @@ struct ctkCmdLineModuleFrontendQtGuiPrivate;
  * <tr><td>string-enumeration</td><td>enumWidget</td><td>QComboBox</td><td>enumerationValueProperty</td><td>currentEnumeration</td></tr>
  * <tr><td>file (input channel)</td><td>fileInputWidget</td><td>ctkPathLineEdit</td><td>fileInputValueProperty</td><td>currentPath</td></tr>
  * <tr><td>file (output channel)</td><td>fileOutputWidget</td><td>ctkPathLineEdit</td><td>fileOutputValueProperty</td><td>currentPath</td></tr>
- * <tr><td>geometry (input channel)</td><td>fileInputWidget</td><td>ctkPathLineEdit</td><td>geometryInputValueProperty</td><td>currentPath</td></tr>
- * <tr><td>geometry (output channel)</td><td>fileOutputWidget</td><td>ctkPathLineEdit</td><td>geometryOutputValueProperty</td><td>currentPath</td></tr>
+ * <tr><td>geometry (input channel)</td><td>geometryInputWidget</td><td>ctkPathLineEdit</td><td>geometryInputValueProperty</td><td>currentPath</td></tr>
+ * <tr><td>geometry (output channel)</td><td>geometryOutputWidget</td><td>ctkPathLineEdit</td><td>geometryOutputValueProperty</td><td>currentPath</td></tr>
  * <tr><td>directory</td><td>directoryWidget</td><td>ctkPathLineEdit</td><td>directoryValueProperty</td><td>currentPath</td></tr>
  * <tr><td>point</td><td>pointWidget</td><td>ctkCoordinatesWidget</td><td>pointValueProperty</td><td>coordinates</td></tr>
  * <tr><td>region</td><td>pointWidget</td><td>ctkCoordinatesWidget</td><td>pointValueProperty</td><td>coordinates</td></tr>
@@ -114,6 +114,8 @@ struct ctkCmdLineModuleFrontendQtGuiPrivate;
  * <tr><th>Set Property Name</th><th>Default</th><th>Set Property Value</th><th>Default</th></tr>
  * <tr><td>file (input channel)</td><td>fileInputSetProperty</td><td>filters</td><td>fileInputSetValue</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Readable</td></tr>
  * <tr><td>file (output channel)</td><td>fileOutputSetProperty</td><td>filters</td><td>fileOutputSetValue</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Writable</td></tr>
+ * <tr><td>geometry (input channel)</td><td>geometryInputSetProperty</td><td>filters</td><td>geometryInputSetValue</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Readable</td></tr>
+ * <tr><td>geometry (output channel)</td><td>geometryOutputSetProperty</td><td>filters</td><td>geometryOutputSetValue</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Writable</td></tr>
  * <tr><td>image (input channel)</td><td>imageInputSetProperty</td><td>filters</td><td>imageInputSetProperty</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Readable</td></tr>
  * <tr><td>image (output channel)</td><td>imageOutputSetProperty</td><td>filters</td><td>imageOutputSetProperty</td><td>ctkPathLineEdit::Files|ctkPathLineEdit::Writable</td></tr>
  * </table>
