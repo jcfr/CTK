@@ -139,9 +139,12 @@ QObject* ctkCmdLineModuleFrontendQtGui::guiHandle() const
     return 0;
   }
 
-  ctkCmdLineModuleQtUiLoader* uiLoader = qobject_cast<ctkCmdLineModuleQtUiLoader*>(this->uiLoader());
-  Q_ASSERT(uiLoader);
-  uiLoader->setDescription(this->moduleReference().description());
+  ctkCmdLineModuleQtUiLoader* qtUiLoader = qobject_cast<ctkCmdLineModuleQtUiLoader*>(this->uiLoader());
+  if (qtUiLoader)
+    {
+    qtUiLoader->setDescription(this->moduleReference().description());
+    }
+  QUiLoader * uiLoader = this->uiLoader();
 #ifdef CMAKE_INTDIR
   QString appPath = QCoreApplication::applicationDirPath();
   if (appPath.endsWith(CMAKE_INTDIR))
