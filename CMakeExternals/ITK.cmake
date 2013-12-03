@@ -8,7 +8,7 @@ set(proj ITK)
 
 set(${proj}_DEPENDENCIES "")
 
-superbuild_include_dependencies(${proj})
+superbuild_include_dependencies(PROJECT_VAR proj)
 
 if(${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   unset(ITK_DIR CACHE)

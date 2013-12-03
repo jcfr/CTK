@@ -365,7 +365,22 @@ endfunction()
 
 #
 # superbuild_include_dependencies(<project>)
-macro(superbuild_include_dependencies proj)
+#
+# superbuild_include_dependencies(PROJECT_VAR <project_var>)
+#
+macro(superbuild_include_dependencies)
+  set(options)
+  set(oneValueArgs PROJECT_VAR)
+  set(multiValueArgs)
+  cmake_parse_arguments(_sb "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  # XXX Implement invalid parameter checking
+
+  if(NOT "x" STREQUAL "x${_sb_PROJECT_VAR}")
+    set(proj ${${_sb_PROJECT_VAR}})
+  else()
+    set(proj ${_sb_UNPARSED_ARGUMENTS})
+  endif()
 
   # Sanity checks
   if(NOT DEFINED ${proj}_DEPENDENCIES)
@@ -484,6 +499,10 @@ macro(superbuild_include_dependencies proj)
       #message("${proj}_EXTERNAL_PROJECT_ARGS:${${proj}_EXTERNAL_PROJECT_ARGS}")
     endif()
 
+  endif()
+
+  if(_sb_PROJECT_VAR)
+    set(${_sb_PROJECT_VAR} ${proj})
   endif()
 
   if(__epd_first_pass)
