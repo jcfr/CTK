@@ -4,10 +4,11 @@
 
 superbuild_include_once()
 
-set(CTKData_DEPENDENCIES "")
-
-ctkMacroCheckExternalProjectDependency(CTKData)
 set(proj CTKData)
+
+set(${proj}_DEPENDENCIES "")
+
+ctkMacroCheckExternalProjectDependency(${proj})
 
 if(${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   message(FATAL_ERROR "Enabling ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj} is not supported !")

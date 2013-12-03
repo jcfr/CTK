@@ -4,10 +4,11 @@
 
 superbuild_include_once()
 
-set(KWStyle_DEPENDENCIES "")
-
-ctkMacroCheckExternalProjectDependency(KWStyle)
 set(proj KWStyle)
+
+set(${proj}_DEPENDENCIES "")
+
+ctkMacroCheckExternalProjectDependency(${proj})
 
 if(${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   unset(KWSTYLE_EXECUTABLE CACHE)
