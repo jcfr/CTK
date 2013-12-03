@@ -291,11 +291,23 @@ function(_sb_get_external_project_arguments proj varname)
   set(${varname} ${_ep_arguments} PARENT_SCOPE)
 endfunction()
 
-macro(_epd_status txt)
-  if(NOT __epd_first_pass)
-    message(STATUS ${txt})
+function(_sb_update_indent proj)
+  superbuild_stack_size(SUPERBUILD_PROJECT_STACK _stack_size)
+  set(_indent "")
+  if(_stack_size GREATER 0)
+    foreach(not_used RANGE 1 ${_stack_size})
+      set(_indent "  ${_indent}")
+    endforeach()
   endif()
-endmacro()
+  set_property(GLOBAL PROPERTY SUPERBUILD_${proj}_INDENT ${_indent})
+endfunction()
+
+function(superbuild_message proj msg)
+  if(NOT __epd_first_pass)
+    get_property(_indent GLOBAL PROPERTY SUPERBUILD_${proj}_INDENT)
+    message(STATUS "SuperBuild - ${_indent}${msg}")
+  endif()
+endfunction()
 
 #!
 #! superbuild_stack_content(<stack_name> <output_var>)
@@ -353,22 +365,17 @@ endfunction()
 
 macro(ctkMacroCheckExternalProjectDependency proj)
 
-  # Set indent variable if needed
-  if(NOT DEFINED __indent)
-    set(__indent "")
-  else()
-    set(__indent "${__indent}  ")
-  endif()
-
   # Sanity checks
   if(NOT DEFINED ${proj}_DEPENDENCIES)
-    message(FATAL_ERROR "${__indent}${proj}_DEPENDENCIES variable is NOT defined !")
+    message(FATAL_ERROR "${proj}_DEPENDENCIES variable is NOT defined !")
   endif()
 
   superbuild_stack_size(SUPERBUILD_PROJECT_STACK _stack_size)
   if(_stack_size EQUAL 0)
     set(SUPERBUILD_TOPLEVEL_PROJECT ${proj})
   endif()
+
+  _sb_update_indent(${proj})
 
   # Keep track of the projects
   list(APPEND __epd_${SUPERBUILD_TOPLEVEL_PROJECT}_projects ${proj})
@@ -379,16 +386,13 @@ macro(ctkMacroCheckExternalProjectDependency proj)
     set(__epd_first_pass TRUE)
   endif()
 
-  # Set message strings
-  set(__${proj}_indent ${__indent})
-  set(__${proj}_superbuild_message "SuperBuild - ${__indent}${proj}[OK]")
-  if(${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SYSTEM_${proj})
-    set(__${proj}_superbuild_message "${__${proj}_superbuild_message} (SYSTEM)")
-  endif()
-
   # Display dependency of project being processed
   if("${${proj}_DEPENDENCIES}" STREQUAL "")
-    _epd_status(${__${proj}_superbuild_message})
+    set(_msg "${proj}[OK]")
+    if(${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SYSTEM_${proj})
+      set(_msg "${_msg} (SYSTEM)")
+    endif()
+    superbuild_message(${proj} ${_msg})
   else()
     set(dependency_str " ")
     foreach(dep ${${proj}_DEPENDENCIES})
@@ -399,7 +403,7 @@ macro(ctkMacroCheckExternalProjectDependency proj)
         set(dependency_str "${dependency_str}${dep}, ")
       endif()
     endforeach()
-    _epd_status("SuperBuild - ${__indent}${proj} => Requires${dependency_str}")
+    superbuild_message(${proj} "${proj} => Requires${dependency_str}")
   endif()
 
   foreach(dep ${${proj}_DEPENDENCIES})
@@ -434,19 +438,15 @@ macro(ctkMacroCheckExternalProjectDependency proj)
 
   # If project being process has dependencies, indicates it has also been added.
   if(NOT "${${proj}_DEPENDENCIES}" STREQUAL "")
-    _epd_status(${__${proj}_superbuild_message})
-  endif()
-
-  # Update indent variable
-  string(LENGTH "${__indent}" __indent_length)
-  math(EXPR __indent_length "${__indent_length}-2")
-  if(NOT ${__indent_length} LESS 0)
-    string(SUBSTRING "${__indent}" 0 ${__indent_length} __indent)
+    set(_msg "${proj}[OK]")
+    if(${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SYSTEM_${proj})
+      set(_msg "${_ok_message} (SYSTEM)")
+    endif()
+    superbuild_message(${proj} ${_msg})
   endif()
 
   if(${proj} STREQUAL ${SUPERBUILD_TOPLEVEL_PROJECT} AND __epd_first_pass)
     message(STATUS "SuperBuild - First pass - done")
-    unset(__indent)
     if(${SUPERBUILD_TOPLEVEL_PROJECT}_SUPERBUILD)
       set(__epd_first_pass FALSE)
     endif()
