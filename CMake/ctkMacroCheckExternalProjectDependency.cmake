@@ -49,6 +49,42 @@ macro(superbuild_include_once)
   set_property(GLOBAL PROPERTY ${_property_name} 1)
 endmacro()
 
+#!
+#! superbuild_cmakevar_to_cmakearg(<cmake_varname_and_type> <cmake_arg_var> [<varname_var> [<vartype_var>]])
+#!
+#! <cmake_varname_and_type> corresponds to variable name and variable type passed as "<varname>:<vartype>"
+#!
+#! <cmake_arg_var> is a variable name that will be set to "-D<varname>:<vartype>=${<varname>}"
+#!
+#! <varname_var> is an optional variable name that will be set to "<varname>"
+#!
+#! <vartype_var> is an optional variable name that will be set to "<vartype>"
+function(superbuild_cmakevar_to_cmakearg cmake_varname_and_type cmake_arg_var)
+  set(_varname_var ${ARGV2})
+  set(_vartype_var ${ARGV3})
+  string(REPLACE ":" ";" varname_and_vartype ${cmake_varname_and_type})
+  list(GET varname_and_vartype 0 _varname)
+  list(GET varname_and_vartype 1 _vartype)
+  set(_var_value "${${_varname}}")
+  get_property(_value_set_in_cache CACHE ${_varname} PROPERTY VALUE SET)
+  if(_value_set_in_cache)
+    get_property(_var_value CACHE ${_varname} PROPERTY VALUE)
+  endif()
+
+  # Separate list item with <sep>
+  set(ep_arg_as_string "")
+  ctk_list_to_string(${sep} "${_var_value}" ep_arg_as_string)
+
+  set(${cmake_arg_var} -D${_varname}:${_vartype}=${ep_arg_as_string} PARENT_SCOPE)
+
+  if(_varname_var MATCHES ".+")
+    set(${_varname_var} ${_varname} PARENT_SCOPE)
+  endif()
+  if(_vartype_var MATCHES ".+")
+    set(${_vartype_var} ${_vartype} PARENT_SCOPE)
+  endif()
+endfunction()
+
 macro(_epd_status txt)
   if(NOT __epd_first_pass)
     message(STATUS ${txt})
