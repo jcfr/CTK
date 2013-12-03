@@ -509,3 +509,23 @@ macro(superbuild_include_dependencies)
     return()
   endif()
 endmacro()
+
+#!
+#! Convenient macro allowing to define a "empty" project in case an external one is provided
+#! using for example <proj>_DIR.
+#! Doing so allows to keep the external project dependency system happy.
+#!
+#! \ingroup CMakeUtilities
+macro(superbuild_add_empty_external_project proj dependencies)
+
+  ExternalProject_Add(${proj}
+    SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
+    BINARY_DIR ${proj}-build
+    DOWNLOAD_COMMAND ""
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ""
+    DEPENDS
+      ${dependencies}
+    )
+endmacro()

@@ -58,7 +58,7 @@ if(NOT DEFINED qxmlrpc_DIR)
   # library output directory to CTK_EXTERNAL_LIBRARY_DIRS
 
 else()
-  ctkMacroEmptyExternalproject(${proj} "${${proj}_DEPENDENCIES}")
+  superbuild_add_empty_external_project(${proj} "${${proj}_DEPENDENCIES}")
 endif()
 
 mark_as_superbuild(

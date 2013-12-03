@@ -53,7 +53,7 @@ if(NOT DEFINED CTKData_DIR)
     )
   set(CTKData_DIR ${CMAKE_BINARY_DIR}/${proj})
 else()
-  ctkMacroEmptyExternalproject(${proj} "${${proj}_DEPENDENCIES}")
+  superbuild_add_empty_external_project(${proj} "${${proj}_DEPENDENCIES}")
 endif()
 
 mark_as_superbuild(

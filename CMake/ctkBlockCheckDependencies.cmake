@@ -32,8 +32,6 @@ ctkMacroGetAllNonProjectTargetLibraries("${ALL_TARGET_LIBRARIES}" NON_CTK_DEPEND
 #
 
 if(CTK_SUPERBUILD)
-  include(ctkMacroEmptyExternalProject)
-
   set(ep_install_dir ${CMAKE_BINARY_DIR}/CMakeExternals/Install)
   set(ep_suffix      "-cmake")
 
