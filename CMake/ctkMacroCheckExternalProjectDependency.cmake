@@ -22,8 +22,9 @@ include(CMakeParseArguments)
 include(ExternalProject)
 include(ctkListToString)
 
-# Use this value where semi-colons are needed in ep_add args:
-set(sep "^^")
+if(NOT DEFINED EP_LIST_SEPARATOR)
+  set(EP_LIST_SEPARATOR "^^")
+endif()
 
 if(NOT EXISTS "${EXTERNAL_PROJECT_DIR}")
   set(EXTERNAL_PROJECT_DIR ${${CMAKE_PROJECT_NAME}_SOURCE_DIR}/SuperBuild)
@@ -157,9 +158,9 @@ function(superbuild_cmakevar_to_cmakearg cmake_varname_and_type cmake_arg_var)
     get_property(_var_value CACHE ${_varname} PROPERTY VALUE)
   endif()
 
-  # Separate list item with <sep>
+  # Separate list item with <EP_LIST_SEPARATOR>
   set(ep_arg_as_string "")
-  ctk_list_to_string(${sep} "${_var_value}" ep_arg_as_string)
+  ctk_list_to_string(${EP_LIST_SEPARATOR} "${_var_value}" ep_arg_as_string)
 
   set(${cmake_arg_var} -D${_varname}:${_vartype}=${ep_arg_as_string} PARENT_SCOPE)
 
@@ -287,6 +288,8 @@ function(_sb_get_external_project_arguments proj varname)
     get_property(${proj}_EP_PROPERTY_${property} GLOBAL PROPERTY ${proj}_EP_PROPERTY_${property})
     list(APPEND _ep_arguments ${property} ${${proj}_EP_PROPERTY_${property}})
   endforeach()
+
+  list(APPEND _ep_arguments LIST_SEPARATOR ${EP_LIST_SEPARATOR})
 
   set(${varname} ${_ep_arguments} PARENT_SCOPE)
 endfunction()
