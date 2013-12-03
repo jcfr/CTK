@@ -34,6 +34,13 @@ if(NOT DEFINED EXTERNAL_PROJECT_FILE_PREFIX)
   set(EXTERNAL_PROJECT_FILE_PREFIX "External_")
 endif()
 
+# Compute -G arg for configuring external projects with the same CMake generator:
+if(CMAKE_EXTRA_GENERATOR)
+  set(EP_CMAKE_GENERATOR "${CMAKE_EXTRA_GENERATOR} - ${CMAKE_GENERATOR}")
+else()
+  set(EP_CMAKE_GENERATOR "${CMAKE_GENERATOR}")
+endif()
+
 #
 # superbuild_include_once()
 #
@@ -290,6 +297,8 @@ function(_sb_get_external_project_arguments proj varname)
   endforeach()
 
   list(APPEND _ep_arguments LIST_SEPARATOR ${EP_LIST_SEPARATOR})
+
+  list(APPEND _ep_arguments CMAKE_GENERATOR ${EP_CMAKE_GENERATOR})
 
   set(${varname} ${_ep_arguments} PARENT_SCOPE)
 endfunction()
