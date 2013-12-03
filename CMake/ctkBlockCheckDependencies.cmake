@@ -127,7 +127,7 @@ macro(superbuild_is_external_project_includable possible_proj output_var)
   endif()
 endmacro()
 
-ctkMacroCheckExternalProjectDependency(CTK)
+superbuild_include_dependencies(CTK)
 
 #message("Updated CTK_DEPENDENCIES:")
 #foreach(dep ${CTK_DEPENDENCIES})

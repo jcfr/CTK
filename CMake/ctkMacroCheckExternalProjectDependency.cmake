@@ -363,7 +363,9 @@ function(superbuild_stack_pop stack_name item_var)
   endif()
 endfunction()
 
-macro(ctkMacroCheckExternalProjectDependency proj)
+#
+# superbuild_include_dependencies(<project>)
+macro(superbuild_include_dependencies proj)
 
   # Sanity checks
   if(NOT DEFINED ${proj}_DEPENDENCIES)
@@ -474,7 +476,7 @@ macro(ctkMacroCheckExternalProjectDependency proj)
 
     if(${SUPERBUILD_TOPLEVEL_PROJECT}_SUPERBUILD)
 
-      ctkMacroCheckExternalProjectDependency(${SUPERBUILD_TOPLEVEL_PROJECT})
+      superbuild_include_dependencies(${SUPERBUILD_TOPLEVEL_PROJECT})
 
       set(proj ${SUPERBUILD_TOPLEVEL_PROJECT})
       unset(${proj}_EXTERNAL_PROJECT_ARGS)

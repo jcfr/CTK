@@ -8,7 +8,7 @@ set(proj DCMTK)
 
 set(${proj}_DEPENDENCIES "")
 
-ctkMacroCheckExternalProjectDependency(${proj})
+superbuild_include_dependencies(${proj})
 
 if(${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   unset(DCMTK_DIR CACHE)
