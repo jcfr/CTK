@@ -18,6 +18,13 @@
 #
 ###########################################################################
 
+include(CMakeParseArguments)
+include(ExternalProject)
+include(ctkListToString)
+
+# Use this value where semi-colons are needed in ep_add args:
+set(sep "^^")
+
 if(NOT EXISTS "${EXTERNAL_PROJECT_DIR}")
   set(EXTERNAL_PROJECT_DIR ${${CMAKE_PROJECT_NAME}_SOURCE_DIR}/SuperBuild)
 endif()
@@ -50,6 +57,85 @@ macro(superbuild_include_once)
 endmacro()
 
 #!
+#! mark_as_superbuild(<varname1>[:<vartype1>] [<varname2>[:<vartype2>] [...]])
+#!
+#! mark_as_superbuild(
+#!     VARS <varname1>[:<vartype1>] [<varname2>[:<vartype2>] [...]]
+#!     [PROJECT <projectname>]
+#!     [LABELS <label1> [<label2> [...]]]
+#!   )
+#!
+#! PROJECT corresponds to a <projectname> that is already or will be added using 'ExternalProject_Add' function.
+#!         If not specified and called within a project file, it defaults to the value of 'SUPERBUILD_TOPLEVEL_PROJECT'
+#!         Otherwise, it defaults to 'CMAKE_PROJECT_NAME'.
+#!
+#! VARS is an expected list of variables specified as <varname>:<vartype> to pass to <projectname>
+#!
+#!
+#! LABELS is an optional list of label to associate with the variable names specified using 'VARS' and passed to
+#!        the <projectname> as CMake args of the form:
+#!          -D<projectname>_EP_CMAKE_ARG_LABEL_<label1>=<varname1>^^<varname2>[...]
+#!          -D<projectname>_EP_CMAKE_ARG_LABEL_<label2>=<varname1>^^<varname2>[...]
+#!
+function(mark_as_superbuild)
+  set(options)
+  set(oneValueArgs PROJECT)
+  set(multiValueArgs VARS LABELS)
+  cmake_parse_arguments(_sb "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  set(_vars ${_sb_UNPARSED_ARGUMENTS})
+
+  set(_named_parameters_expected 0)
+  if(_sb_PROJECT OR _sb_LABELS OR _sb_VARS)
+    set(_named_parameters_expected 1)
+    set(_vars ${_sb_VARS})
+  endif()
+
+  if(_named_parameters_expected AND _sb_UNPARSED_ARGUMENTS)
+    message(FATAL_ERROR "Arguments '${_sb_UNPARSED_ARGUMENTS}' should be associated with VARS parameter !")
+  endif()
+
+  foreach(var ${_vars})
+    set(_type_specified 0)
+    if(${var} MATCHES ":")
+      set(_type_specified 1)
+    endif()
+    # XXX Display warning with variable type is also specified for cache variable.
+    set(_var ${var})
+    if(NOT _type_specified)
+      get_property(_type_set_in_cache CACHE ${_var} PROPERTY TYPE SET)
+      set(_var_name ${_var})
+      set(_var_type "STRING")
+      if(_type_set_in_cache)
+        get_property(_var_type CACHE ${_var_name} PROPERTY TYPE)
+      endif()
+      set(_var ${_var_name}:${_var_type})
+    endif()
+    list(APPEND _vars_with_type ${_var})
+  endforeach()
+  _sb_append_to_cmake_args(VARS ${_vars_with_type} PROJECT ${_sb_PROJECT} LABELS ${_sb_LABELS})
+endfunction()
+
+#!
+#! _sb_extract_varname_and_vartype(<cmake_varname_and_type> <varname_var> [<vartype_var>])
+#!
+#! <cmake_varname_and_type> corresponds to variable name and variable type passed as "<varname>:<vartype>"
+#!
+#! <varname_var> will be set to "<varname>"
+#!
+#! <vartype_var> is an optional variable name that will be set to "<vartype>"
+function(_sb_extract_varname_and_vartype cmake_varname_and_type varname_var)
+  set(_vartype_var ${ARGV2})
+  string(REPLACE ":" ";" varname_and_vartype ${cmake_varname_and_type})
+  list(GET varname_and_vartype 0 _varname)
+  list(GET varname_and_vartype 1 _vartype)
+  set(${varname_var} ${_varname} PARENT_SCOPE)
+  if(_vartype_var MATCHES ".+")
+    set(${_vartype_var} ${_vartype} PARENT_SCOPE)
+  endif()
+endfunction()
+
+#!
 #! superbuild_cmakevar_to_cmakearg(<cmake_varname_and_type> <cmake_arg_var> [<varname_var> [<vartype_var>]])
 #!
 #! <cmake_varname_and_type> corresponds to variable name and variable type passed as "<varname>:<vartype>"
@@ -62,9 +148,9 @@ endmacro()
 function(superbuild_cmakevar_to_cmakearg cmake_varname_and_type cmake_arg_var)
   set(_varname_var ${ARGV2})
   set(_vartype_var ${ARGV3})
-  string(REPLACE ":" ";" varname_and_vartype ${cmake_varname_and_type})
-  list(GET varname_and_vartype 0 _varname)
-  list(GET varname_and_vartype 1 _vartype)
+
+  _sb_extract_varname_and_vartype(${cmake_varname_and_type} _varname _vartype)
+
   set(_var_value "${${_varname}}")
   get_property(_value_set_in_cache CACHE ${_varname} PROPERTY VALUE SET)
   if(_value_set_in_cache)
@@ -83,6 +169,126 @@ function(superbuild_cmakevar_to_cmakearg cmake_varname_and_type cmake_arg_var)
   if(_vartype_var MATCHES ".+")
     set(${_vartype_var} ${_vartype} PARENT_SCOPE)
   endif()
+endfunction()
+
+#!
+#! _sb_append_to_cmake_args(
+#!     VARS <varname1>:<vartype1> [<varname2>:<vartype2> [...]]
+#!     [PROJECT <projectname>]
+#!     [LABELS <label1> [<label2> [...]]]
+#!   )
+#!
+#! PROJECT corresponds to a <projectname> that is already or will be added using 'ExternalProject_Add' function.
+#!         If not specified and called within a project file, it defaults to the value of 'SUPERBUILD_TOPLEVEL_PROJECT'
+#!         Otherwise, it defaults to 'CMAKE_PROJECT_NAME'.
+#!
+#! VARS is an expected list of variables specified as <varname>:<vartype> to pass to <projectname>
+#!
+#!
+#! LABELS is an optional list of label to associate with the variable names specified using 'VARS' and passed to
+#!        the <projectname> as CMake args of the form:
+#!          -D<projectname>_EP_CMAKE_ARG_LABEL_<label1>=<varname1>^^<varname2>[...]
+#!          -D<projectname>_EP_CMAKE_ARG_LABEL_<label2>=<varname1>^^<varname2>[...]
+#!
+function(_sb_append_to_cmake_args)
+  set(options)
+  set(oneValueArgs PROJECT)
+  set(multiValueArgs VARS LABELS)
+  cmake_parse_arguments(_sb "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  if(NOT _sb_PROJECT)
+    if(SUPERBUILD_TOPLEVEL_PROJECT)
+      set(_sb_PROJECT ${SUPERBUILD_TOPLEVEL_PROJECT})
+    else()
+      set(_sb_PROJECT ${CMAKE_PROJECT_NAME})
+    endif()
+  endif()
+
+  set(_ep_varnames "")
+  set(_ep_property "CMAKE_ARGS")
+  foreach(varname_and_vartype ${_sb_VARS})
+    if(NOT TARGET ${_sb_PROJECT})
+      set_property(GLOBAL APPEND PROPERTY ${_sb_PROJECT}_EP_${_ep_property} ${varname_and_vartype})
+      _sb_extract_varname_and_vartype(${varname_and_vartype} _varname)
+      set_property(GLOBAL APPEND PROPERTY ${_sb_PROJECT}_EP_PROPERTIES ${_ep_property})
+    else()
+      superbuild_cmakevar_to_cmakearg(${var} cmake_arg _varname)
+      superbuild_append_to_external_project_property(
+        PROJECT ${_sb_PROJECT} PROPERTY ${_ep_property}
+        VALUES ${cmake_arg})
+    endif()
+    list(APPEND _ep_varnames ${_varname})
+  endforeach()
+
+  if(_sb_LABELS)
+    set_property(GLOBAL APPEND PROPERTY ${_sb_PROJECT}_EP_CMAKE_ARG_LABELS ${_sb_LABELS})
+    foreach(label ${_sb_LABELS})
+      set_property(GLOBAL APPEND PROPERTY ${_sb_PROJECT}_EP_CMAKE_ARG_LABEL_${label} ${_ep_varnames})
+    endforeach()
+  endif()
+endfunction()
+
+#!
+#! superbuild_append_to_external_project_property(
+#!     PROJECT <projectname>
+#!     PROPERTY <arg_name>
+#!     VALUES <value1>[;<value2>[...]]
+#!  )
+#!
+#! PROJECT corresponds to a <projectname> that is already or will be added using 'ExternalProject_Add' function.
+#!
+#! PROPERTY is the name of an argument supported by 'ExternalProject_Add' function.
+#!
+#! VALUES is a list of value to append to the external project argument identified by <arg_name>.
+#!
+function(superbuild_append_to_external_project_property)
+  set(options)
+  set(oneValueArgs PROJECT PROPERTY)
+  set(multiValueArgs VALUES)
+  cmake_parse_arguments(_sb "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  # Validate property name
+  if(NOT ${_sb_PROPERTY} MATCHES ${_ep_keywords_ExternalProject_Add})
+    message(FATAL_ERROR "'${_sb_PROPERTY}' is not a known ExternalProject property !")
+  endif()
+
+  if(TARGET ${_sb_PROJECT})
+    set(ns "_EP_")
+    set(key ${_sb_PROPERTY})
+    set_property(TARGET ${_sb_PROJECT} APPEND PROPERTY ${ns}${key} ${_sb_VALUES})
+  else()
+    set_property(GLOBAL APPEND PROPERTY ${_sb_PROJECT}_EP_PROPERTIES ${_sb_PROPERTY})
+    set_property(GLOBAL APPEND PROPERTY ${_sb_PROJECT}_EP_PROPERTY_${_sb_PROPERTY} ${_sb_VALUES})
+  endif()
+endfunction()
+
+function(_sb_get_external_project_arguments proj varname)
+
+  set(_ep_arguments "")
+
+  # Set list of CMake args associated with each label
+  get_property(_labels GLOBAL PROPERTY ${proj}_EP_CMAKE_ARG_LABELS)
+  list(REMOVE_DUPLICATES _labels)
+  foreach(label ${_labels})
+    get_property(${proj}_EP_CMAKE_ARG_LABEL_${label} GLOBAL PROPERTY ${proj}_EP_CMAKE_ARG_LABEL_${label})
+    list(REMOVE_DUPLICATES ${proj}_EP_CMAKE_ARG_LABEL_${label})
+    _sb_append_to_cmake_args(VARS ${proj}_EP_CMAKE_ARG_LABEL_${label}:STRING)
+  endforeach()
+
+  get_property(_args GLOBAL PROPERTY ${proj}_EP_CMAKE_ARGS)
+  foreach(var ${_args})
+    superbuild_cmakevar_to_cmakearg(${var} cmake_arg)
+    set_property(GLOBAL APPEND PROPERTY ${proj}_EP_PROPERTY_CMAKE_ARGS ${cmake_arg})
+  endforeach()
+
+  get_property(_properties GLOBAL PROPERTY ${proj}_EP_PROPERTIES)
+  list(REMOVE_DUPLICATES _properties)
+  foreach(property ${_properties})
+    get_property(${proj}_EP_PROPERTY_${property} GLOBAL PROPERTY ${proj}_EP_PROPERTY_${property})
+    list(APPEND _ep_arguments ${property} ${${proj}_EP_PROPERTY_${property}})
+  endforeach()
+
+  set(${varname} ${_ep_arguments} PARENT_SCOPE)
 endfunction()
 
 macro(_epd_status txt)
@@ -227,6 +433,11 @@ macro(ctkMacroCheckExternalProjectDependency proj)
     if(${SUPERBUILD_TOPLEVEL_PROJECT}_SUPERBUILD)
 
       ctkMacroCheckExternalProjectDependency(${SUPERBUILD_TOPLEVEL_PROJECT})
+
+      set(proj ${SUPERBUILD_TOPLEVEL_PROJECT})
+      unset(${proj}_EXTERNAL_PROJECT_ARGS)
+      _sb_get_external_project_arguments(${proj} ${proj}_EXTERNAL_PROJECT_ARGS)
+      #message("${proj}_EXTERNAL_PROJECT_ARGS:${${proj}_EXTERNAL_PROJECT_ARGS}")
     endif()
 
   endif()

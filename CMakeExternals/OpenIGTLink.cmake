@@ -40,6 +40,7 @@ if(NOT DEFINED OpenIGTLink_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   endif()
 
   ExternalProject_Add(${proj}
+    ${${proj}_EXTERNAL_PROJECT_ARGS}
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${proj}-build
     PREFIX ${proj}${ep_suffix}
@@ -59,4 +60,7 @@ else()
   ctkMacroEmptyExternalproject(${proj} "${${proj}_DEPENDENCIES}")
 endif()
 
-list(APPEND CTK_SUPERBUILD_EP_VARS OpenIGTLink_DIR:PATH)
+mark_as_superbuild(
+  VARS OpenIGTLink_DIR:PATH
+  LABELS "FIND_PACKAGE"
+  )

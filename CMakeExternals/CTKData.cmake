@@ -37,6 +37,7 @@ if(NOT DEFINED CTKData_DIR)
   endif()
 
   ExternalProject_Add(${proj}
+    ${${proj}_EXTERNAL_PROJECT_ARGS}
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${proj}-build
     PREFIX ${proj}${ep_suffix}
@@ -54,4 +55,7 @@ else()
   ctkMacroEmptyExternalproject(${proj} "${${proj}_DEPENDENCIES}")
 endif()
 
-list(APPEND CTK_SUPERBUILD_EP_VARS CTKData_DIR:PATH)
+mark_as_superbuild(
+  VARS CTKData_DIR:PATH
+  LABELS "FIND_PACKAGE"
+  )
