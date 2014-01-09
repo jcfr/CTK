@@ -30,12 +30,14 @@ set(KITTests_SRCS
   ctkCommandLineParserTest1.cpp
   ctkErrorLogModelTest1.cpp
   ctkErrorLogModelEntryGroupingTest1.cpp
+  ctkErrorLogModelFileLoggingTest1.cpp
   ctkErrorLogModelTerminalOutputTest1.cpp
   ctkErrorLogModelTest4.cpp
   ctkErrorLogFDMessageHandlerWithThreadsTest1.cpp
   ctkErrorLogQtMessageHandlerWithThreadsTest1.cpp
   ctkErrorLogStreamMessageHandlerWithThreadsTest1.cpp
   ctkExceptionTest.cpp
+  ctkFileLoggerTest.cpp
   ctkHighPrecisionTimerTest.cpp
   ctkHistogramTest1.cpp
   ctkLinearValueProxyTest.cpp
@@ -104,6 +106,7 @@ set(Tests_Helpers_MOC_CPP)
 QT4_WRAP_CPP(Tests_Helpers_MOC_CPP ${Tests_Helpers_MOC_SRCS})
 QT4_GENERATE_MOCS(
   ctkBooleanMapperTest.cpp
+  ctkFileLoggerTest.cpp
   ctkLinearValueProxyTest.cpp
   ctkUtilsTest.cpp
   )
@@ -148,12 +151,14 @@ SIMPLE_TEST( ctkDependencyGraphTest1 )
 SIMPLE_TEST( ctkDependencyGraphTest2 )
 SIMPLE_TEST( ctkErrorLogModelTest1 )
 SIMPLE_TEST( ctkErrorLogModelEntryGroupingTest1 )
+SIMPLE_TEST( ctkErrorLogModelFileLoggingTest1 )
 SIMPLE_TEST( ctkErrorLogModelTerminalOutputTest1 --test-launcher $<TARGET_FILE:${KIT}CppTests>)
 SIMPLE_TEST( ctkErrorLogModelTest4 )
 SIMPLE_TEST( ctkErrorLogFDMessageHandlerWithThreadsTest1 )
 SIMPLE_TEST( ctkErrorLogQtMessageHandlerWithThreadsTest1 )
 SIMPLE_TEST( ctkErrorLogStreamMessageHandlerWithThreadsTest1 )
 SIMPLE_TEST( ctkExceptionTest )
+SIMPLE_TEST( ctkFileLoggerTest )
 SIMPLE_TEST( ctkHighPrecisionTimerTest )
 SIMPLE_TEST( ctkHistogramTest1 )
 SIMPLE_TEST( ctkLinearValueProxyTest )

@@ -7,6 +7,7 @@ set(TEST_SOURCES
   ctkVTKColorTransferFunctionTest1.cpp
   ctkVTKConnectionTest1.cpp
   ctkVTKErrorLogMessageHandlerWithThreadsTest1.cpp
+  ctkVTKErrorLogModelFileLoggingTest1.cpp
   ctkVTKErrorLogModelTest1.cpp
   ctkVTKHistogramTest1.cpp
   ctkVTKHistogramTest2.cpp
@@ -68,6 +69,7 @@ target_link_libraries(${KIT}CppTests ${LIBRARY_NAME} ${CTK_BASE_LIBRARIES})
 SIMPLE_TEST( ctkVTKColorTransferFunctionTest1 )
 SIMPLE_TEST( ctkVTKConnectionTest1 )
 SIMPLE_TEST( ctkVTKErrorLogMessageHandlerWithThreadsTest1 )
+SIMPLE_TEST( ctkVTKErrorLogModelFileLoggingTest1 )
 SIMPLE_TEST( ctkVTKErrorLogModelTest1 )
 SIMPLE_TEST( ctkVTKHistogramTest1 )
 SIMPLE_TEST( ctkVTKHistogramTest2 )
