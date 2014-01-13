@@ -208,6 +208,7 @@ void ctkFDHandler::run()
       ctk::qtHandleToString(QThread::currentThreadId()),
       this->LogLevel,
       this->MessageHandler->handlerPrettyName(),
+      ctkErrorLogContext(line),
       line);
     }
 }

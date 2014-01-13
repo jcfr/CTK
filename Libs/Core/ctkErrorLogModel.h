@@ -59,6 +59,20 @@ public:
 Q_DECLARE_OPERATORS_FOR_FLAGS(ctkErrorLogLevel::LogLevels)
 
 //------------------------------------------------------------------------------
+/// \ingroup Core
+struct CTK_CORE_EXPORT ctkErrorLogContext
+{
+  ctkErrorLogContext():Line(0),File("unknown"), Function("unknown"), Message(""){}
+  ctkErrorLogContext(const QString& msg):
+    Line(0),File("unknown"), Function("unknown"), Message(msg){}
+  QString Category;
+  int Line;
+  QString File;
+  QString Function;
+  QString Message;
+};
+
+//------------------------------------------------------------------------------
 class ctkErrorLogTerminalOutputPrivate;
 
 //------------------------------------------------------------------------------
@@ -200,7 +214,8 @@ public Q_SLOTS:
 
   /// \sa logEntryGrouping(), asynchronousLogging()
   void addEntry(const QDateTime& currentDateTime, const QString& threadId,
-                ctkErrorLogLevel::LogLevel logLevel, const QString& origin, const QString& text);
+                ctkErrorLogLevel::LogLevel logLevel, const QString &origin,
+                const ctkErrorLogContext &context, const QString& text);
 
 Q_SIGNALS:
   void logLevelFilterChanged();
@@ -239,7 +254,7 @@ public:
   void setEnabled(bool value);
 
   void handleMessage(const QString& threadId, ctkErrorLogLevel::LogLevel logLevel,
-                     const QString& origin, const QString& text);
+                     const QString& origin, const ctkErrorLogContext& logContext, const QString& text);
 
   ctkErrorLogTerminalOutput* terminalOutput(ctkErrorLogModel::TerminalOutput terminalOutputType)const;
   void setTerminalOutput(ctkErrorLogModel::TerminalOutput terminalOutputType,
@@ -248,6 +263,7 @@ public:
 Q_SIGNALS:
   void messageHandled(const QDateTime& currentDateTime, const QString& threadId,
                       ctkErrorLogLevel::LogLevel logLevel, const QString& origin,
+                      const ctkErrorLogContext& logContext,
                       const QString& text);
 
 protected:
