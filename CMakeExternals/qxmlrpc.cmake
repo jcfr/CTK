@@ -52,6 +52,7 @@ if(NOT DEFINED qxmlrpc_DIR)
     CMAKE_CACHE_ARGS
       ${ep_common_cache_args}
       -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
+      -DCMAKE_PREFIX_PATH:PATH=${CMAKE_PREFIX_PATH}
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )

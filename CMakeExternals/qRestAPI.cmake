@@ -52,6 +52,7 @@ if(NOT DEFINED ${proj}_DIR)
       ${ep_common_cache_args}
       -DqRestAPI_QT_VERSION:STRING=${CTK_QT_VERSION}
       -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
+      -DCMAKE_PREFIX_PATH:PATH=${CMAKE_PREFIX_PATH}
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )
