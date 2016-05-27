@@ -149,9 +149,12 @@ def ctk_wrap_pythonqt(target, namespace, output_dir, input_files, extra_verbose)
         # Generate code allowing to register the class metaobject and its associated "light" wrapper
         registerclasses.append(
         Template("""
-  PythonQt::self()->registerClass(
-  &${className}::staticMetaObject, "${target}",
-  PythonQtCreateObject<PythonQtWrapper_${className}>);
+  PythonQt::priv()->registerClass(
+    /* metaobject= */ &${className}::staticMetaObject,
+    /* package= */ "${target}",
+    /* wrapperCreator= */ PythonQtCreateObject<PythonQtWrapper_${className}>,
+    /* shell= */ 0,
+    /* module= */ module);
   """).substitute(className = className, target = target))
 
     output_header = output_dir + "/" + namespace + "_" + target + ".h"
@@ -201,7 +204,6 @@ ${pythonqtWrappers}
 
 void PythonQt_init_${namespace}_${target}(PyObject* module)
 {
-  Q_UNUSED(module);
   ${registerclasses}
 }
 """).substitute(namespace = namespace, target = target, registerclasses = '\n'.join(registerclasses)))

@@ -53,11 +53,12 @@ void copyAttributes(PyObject* orig_module, PyObject* dest_module)
 void init@TARGET_CONFIG@PythonQt()
 {
   static const char modulename[] = "@TARGET_CONFIG@PythonQt";
-  PyObject *m;
+  PyObject *importableModule;
 
-  m = Py_InitModule((char*)modulename, Py@TARGET_CONFIG@PythonQt_ClassMethods);
+  importableModule = Py_InitModule((char*)modulename, Py@TARGET_CONFIG@PythonQt_ClassMethods);
+
   extern void PythonQt_init_@WRAPPING_NAMESPACE_UNDERSCORE@_@TARGET_CONFIG@(PyObject*);
-  PythonQt_init_@WRAPPING_NAMESPACE_UNDERSCORE@_@TARGET_CONFIG@(m);
+  PythonQt_init_@WRAPPING_NAMESPACE_UNDERSCORE@_@TARGET_CONFIG@(0);
 
 #ifdef HAS_DECORATOR
   extern void init@TARGET_CONFIG@PythonQtDecorators();
@@ -72,5 +73,5 @@ void init@TARGET_CONFIG@PythonQt()
     PyErr_SetString(PyExc_ImportError, (char*)"Failed to import PythonQt.@TARGET_CONFIG@");
     return;
     }
-  copyAttributes(currentModule, m);
+  copyAttributes(currentModule, importableModule);
 }
