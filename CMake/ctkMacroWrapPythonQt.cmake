@@ -42,6 +42,7 @@
 #!
 #!    HAS_DECORATOR ....: Indicate if a custom PythonQt decorator header is expected.
 #!
+#!    WITH_MODULE_INIT .: Indicate if module initialialization source are append to SRCS_LIST_NAME.
 
 #!
 #! LOG FILE:
@@ -52,7 +53,7 @@
 set(verbose 0)
 
 #! \ingroup CMakeUtilities
-macro(ctkMacroWrapPythonQt WRAPPING_NAMESPACE TARGET SRCS_LIST_NAME SOURCES IS_WRAP_FULL HAS_DECORATOR)
+macro(ctkMacroWrapPythonQt WRAPPING_NAMESPACE TARGET SRCS_LIST_NAME SOURCES IS_WRAP_FULL HAS_DECORATOR WITH_MODULE_INIT)
 
   # Sanity check
   if(IS_WRAP_FULL)
@@ -128,17 +129,6 @@ macro(ctkMacroWrapPythonQt WRAPPING_NAMESPACE TARGET SRCS_LIST_NAME SOURCES IS_W
   # Define wrap type and wrap intermediate directory
   set(wrap_int_dir generated_cpp/${WRAPPING_NAMESPACE_UNDERSCORE}_${TARGET}/)
 
-  set(wrapper_module_init_cpp_filename ${wrap_int_dir}${WRAPPING_NAMESPACE_UNDERSCORE}_${TARGET}_module_init.cpp)
-
-  # Configure 'ctkMacroWrapPythonQtModuleInit.cpp.in' using TARGET, HAS_DECORATOR and
-  # WRAPPING_NAMESPACE_UNDERSCORE.
-  set(TARGET_CONFIG ${TARGET})
-  configure_file(
-    ${CTK_CMAKE_DIR}/ctkMacroWrapPythonQtModuleInit.cpp.in
-    ${wrapper_module_init_cpp_filename}
-    @ONLY
-    )
-
   set(extra_args)
   if(verbose)
     set(extra_args --extra-verbose)
@@ -147,10 +137,12 @@ macro(ctkMacroWrapPythonQt WRAPPING_NAMESPACE TARGET SRCS_LIST_NAME SOURCES IS_W
   # Custom command allow to generate ${WRAPPING_NAMESPACE_UNDERSCORE}_${TARGET}_init.cpp and
   # associated wrappers ${WRAPPING_NAMESPACE_UNDERSCORE}_${TARGET}.cpp
   set(wrapper_init_cpp_filename ${wrap_int_dir}${WRAPPING_NAMESPACE_UNDERSCORE}_${TARGET}_init.cpp)
+  set(wrapper_init_h_filename ${wrap_int_dir}${WRAPPING_NAMESPACE_UNDERSCORE}_${TARGET}_init.h)
   set(wrapper_h_filename ${wrap_int_dir}${WRAPPING_NAMESPACE_UNDERSCORE}_${TARGET}.h)
   add_custom_command(
     OUTPUT
       ${wrapper_init_cpp_filename}
+      ${wrapper_init_h_filename}
       ${wrapper_h_filename}
     DEPENDS
       ${SOURCES_TO_WRAP}
@@ -172,17 +164,38 @@ macro(ctkMacroWrapPythonQt WRAPPING_NAMESPACE TARGET SRCS_LIST_NAME SOURCES IS_W
   # The following files are generated
   set_source_files_properties(
     ${wrapper_init_cpp_filename}
+    ${wrapper_init_h_filename}
     ${wrapper_h_filename}
-    ${wrapper_module_init_cpp_filename}
     PROPERTIES GENERATED TRUE)
 
   # Create the Init File
   set(${SRCS_LIST_NAME}
     ${${SRCS_LIST_NAME}}
     ${wrapper_init_cpp_filename}
-    ${wrapper_module_init_cpp_filename}
+    ${wrapper_init_h_filename}
     ${${TARGET}_MOC_CXX}
     )
+
+  if(WITH_MODULE_INIT)
+    set(wrapper_module_init_cpp_filename ${wrap_int_dir}${WRAPPING_NAMESPACE_UNDERSCORE}_${TARGET}_module_init.cpp)
+
+    # Configure 'ctkMacroWrapPythonQtModuleInit.cpp.in' using TARGET, HAS_DECORATOR and
+    # WRAPPING_NAMESPACE_UNDERSCORE.
+    set(TARGET_CONFIG ${TARGET})
+    configure_file(
+      ${CTK_CMAKE_DIR}/ctkMacroWrapPythonQtModuleInit.cpp.in
+      ${wrapper_module_init_cpp_filename}
+      @ONLY
+      )
+
+    set_source_files_properties(
+      ${wrapper_module_init_cpp_filename}
+      PROPERTIES GENERATED TRUE
+      )
+    list(APPEND ${SRCS_LIST_NAME}
+      ${wrapper_module_init_cpp_filename}
+      )
+  endif()
 
   #
   # Let's include the headers associated with PythonQt

@@ -34,8 +34,8 @@
 #! \ingroup CMakeAPI
 macro(ctkMacroBuildLibWrapper)
   ctkMacroParseArguments(MY
-    "NAMESPACE;TARGET;SRCS;WRAPPER_LIBRARY_TYPE;ARCHIVE_OUTPUT_DIRECTORY;LIBRARY_OUTPUT_DIRECTORY;RUNTIME_OUTPUT_DIRECTORY;INSTALL_BIN_DIR;INSTALL_LIB_DIR"
-    "NO_INSTALL"
+    "NAMESPACE;TARGET;SRCS;WRAPPER_LIBRARY_TYPE;ARCHIVE_OUTPUT_DIRECTORY;LIBRARY_OUTPUT_DIRECTORY;RUNTIME_OUTPUT_DIRECTORY;INSTALL_BIN_DIR;INSTALL_LIB_DIR;WRAPPER_SRCS_LIST_NAME"
+    "NO_INSTALL;NO_MODULE"
     ${ARGN}
     )
 
@@ -93,9 +93,17 @@ macro(ctkMacroBuildLibWrapper)
   message(STATUS "${_msg} - ${_status}")
   #message("path/to/DECORATOR_HEADER:${CMAKE_CURRENT_SOURCE_DIR}/${DECORATOR_HEADER}")
 
+  # By default, "${lib_name}PythonQt" python module will be created. If
+  # option NO_MODULE is given, library will not be compiled. Instead,
+  # wrapper source will be associated with 'WRAPPER_SRCS_LIST_NAME' if set.
+  set(WITH_MODULE_INIT TRUE)
+  if(MY_NO_MODULE)
+    set(WITH_MODULE_INIT FALSE)
+  endif()
+
   set(KIT_PYTHONQT_SRCS) # Clear variable
   ctkMacroWrapPythonQt(${MY_NAMESPACE} ${lib_name}
-    KIT_PYTHONQT_SRCS "${MY_SRCS}" FALSE ${HAS_DECORATOR})
+    KIT_PYTHONQT_SRCS "${MY_SRCS}" FALSE ${HAS_DECORATOR} ${WITH_MODULE_INIT})
   if(HAS_DECORATOR)
     list(APPEND KIT_PYTHONQT_SRCS ${DECORATOR_HEADER})
     if (CTK_QT_VERSION VERSION_GREATER "4")
@@ -104,44 +112,52 @@ macro(ctkMacroBuildLibWrapper)
       QT4_WRAP_CPP(KIT_PYTHONQT_SRCS ${DECORATOR_HEADER} OPTIONS -f${DECORATOR_HEADER})
     endif()
   endif()
-  add_library(${lib_name}PythonQt ${MY_WRAPPER_LIBRARY_TYPE} ${KIT_PYTHONQT_SRCS})
-  target_link_libraries(${lib_name}PythonQt ${lib_name} ${my_EXTRA_PYTHON_LIBRARIES})
-  if(MY_WRAPPER_LIBRARY_TYPE STREQUAL "STATIC")
-    if(CMAKE_SIZEOF_VOID_P EQUAL 8) # 64-bit
-      set_target_properties(${lib_name}PythonQt PROPERTIES COMPILE_FLAGS "-fPIC")
-    endif()
+
+  if(DEFINED MY_WRAPPER_SRCS_LIST_NAME)
+    set(${MY_WRAPPER_SRCS_LIST_NAME} ${KIT_PYTHONQT_SRCS})
   endif()
-  if(MY_WRAPPER_LIBRARY_TYPE STREQUAL "MODULE")
-    # Make sure that no prefix is set on the library
-    set_target_properties(${lib_name}PythonQt PROPERTIES PREFIX "")
-    # Python extension modules on Windows must have the extension ".pyd"
-    # instead of ".dll" as of Python 2.5.  Older python versions do support
-    # this suffix.
-    # See http://docs.python.org/faq/windows.html#is-a-pyd-file-the-same-as-a-dll
-    if(WIN32 AND NOT CYGWIN)
-      set_target_properties(${lib_name}PythonQt PROPERTIES SUFFIX ".pyd")
+
+  if(NOT MY_NO_MODULE)
+    add_library(${lib_name}PythonQt ${MY_WRAPPER_LIBRARY_TYPE} ${KIT_PYTHONQT_SRCS})
+    target_link_libraries(${lib_name}PythonQt ${lib_name} ${my_EXTRA_PYTHON_LIBRARIES})
+    if(MY_WRAPPER_LIBRARY_TYPE STREQUAL "STATIC")
+      if(CMAKE_SIZEOF_VOID_P EQUAL 8) # 64-bit
+        set_target_properties(${lib_name}PythonQt PROPERTIES COMPILE_FLAGS "-fPIC")
+      endif()
     endif()
-  endif()
-  set_target_properties(${lib_name}PythonQt PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${MY_RUNTIME_OUTPUT_DIRECTORY}"
-    LIBRARY_OUTPUT_DIRECTORY "${MY_LIBRARY_OUTPUT_DIRECTORY}"
-    ARCHIVE_OUTPUT_DIRECTORY "${MY_ARCHIVE_OUTPUT_DIRECTORY}"
-    )
+    if(MY_WRAPPER_LIBRARY_TYPE STREQUAL "MODULE")
+      # Make sure that no prefix is set on the library
+      set_target_properties(${lib_name}PythonQt PROPERTIES PREFIX "")
+      # Python extension modules on Windows must have the extension ".pyd"
+      # instead of ".dll" as of Python 2.5.  Older python versions do support
+      # this suffix.
+      # See http://docs.python.org/faq/windows.html#is-a-pyd-file-the-same-as-a-dll
+      if(WIN32 AND NOT CYGWIN)
+        set_target_properties(${lib_name}PythonQt PROPERTIES SUFFIX ".pyd")
+      endif()
+    endif()
+    set_target_properties(${lib_name}PythonQt PROPERTIES
+      RUNTIME_OUTPUT_DIRECTORY "${MY_RUNTIME_OUTPUT_DIRECTORY}"
+      LIBRARY_OUTPUT_DIRECTORY "${MY_LIBRARY_OUTPUT_DIRECTORY}"
+      ARCHIVE_OUTPUT_DIRECTORY "${MY_ARCHIVE_OUTPUT_DIRECTORY}"
+      )
 
-  # Set labels associated with the target.
-  set_target_properties(${lib_name}PythonQt PROPERTIES LABELS ${lib_name})
+    # Set labels associated with the target.
+    set_target_properties(${lib_name}PythonQt PROPERTIES LABELS ${lib_name})
 
-  # Update list of libraries wrapped with PythonQt
-  set(CTK_WRAPPED_LIBRARIES_PYTHONQT
-    ${CTK_WRAPPED_LIBRARIES_PYTHONQT} ${lib_name}
-    CACHE INTERNAL "CTK libraries wrapped using PythonQt" FORCE)
+    # Update list of libraries wrapped with PythonQt
+    set(CTK_WRAPPED_LIBRARIES_PYTHONQT
+      ${CTK_WRAPPED_LIBRARIES_PYTHONQT} ${lib_name}
+      CACHE INTERNAL "CTK libraries wrapped using PythonQt" FORCE)
 
-  # Install rules
-  if(NOT MY_NO_INSTALL AND MY_WRAPPER_LIBRARY_TYPE STREQUAL "MODULE")
-    install(TARGETS ${lib_name}PythonQt
-      RUNTIME DESTINATION ${MY_INSTALL_LIB_DIR} COMPONENT RuntimePlugins
-      LIBRARY DESTINATION ${MY_INSTALL_LIB_DIR} COMPONENT RuntimePlugins
-      ARCHIVE DESTINATION ${MY_INSTALL_LIB_DIR} COMPONENT Development)
+    # Install rules
+    if(NOT MY_NO_INSTALL AND MY_WRAPPER_LIBRARY_TYPE STREQUAL "MODULE")
+      install(TARGETS ${lib_name}PythonQt
+        RUNTIME DESTINATION ${MY_INSTALL_LIB_DIR} COMPONENT RuntimePlugins
+        LIBRARY DESTINATION ${MY_INSTALL_LIB_DIR} COMPONENT RuntimePlugins
+        ARCHIVE DESTINATION ${MY_INSTALL_LIB_DIR} COMPONENT Development)
+    endif()
+
   endif()
 
 endmacro()
