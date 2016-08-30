@@ -540,7 +540,10 @@ void ctkConsolePrivate::updateCompleter()
     QTextCursor text_cursor = this->textCursor();
     text_cursor.setPosition(this->InteractivePosition, QTextCursor::KeepAnchor);
     QString commandText = text_cursor.selectedText();
-    commandText.remove("()");
+    //commandText.remove("()");
+
+    qDebug() << "\n------------------------------------\n------------------------------------\n";
+    qDebug() << "commandText" << commandText;
 
     // Call the completer to update the completion model
     this->Completer->updateCompletionModel(commandText);

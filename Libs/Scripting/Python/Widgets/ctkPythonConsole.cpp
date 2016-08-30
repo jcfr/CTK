@@ -275,13 +275,19 @@ void ctkPythonConsoleCompleter::updateCompletionModel(const QString& completion)
     return;
     }
 
+  bool appendParenthesis = true;
+
   // Search backward through the string for usable characters
   QString textToComplete;
   for (int i = completion.length()-1; i >= 0; --i)
     {
     QChar c = completion.at(i);
-    if (c.isLetterOrNumber() || c == '.' || c == '_')
+    if (c.isLetterOrNumber() || c == '.' || c == '_' || c == '(' || c == ')')
       {
+      if (c == '(' || c == ')')
+        {
+        appendParenthesis = false;
+        }
       textToComplete.prepend(c);
       }
     else
@@ -300,16 +306,20 @@ void ctkPythonConsoleCompleter::updateCompletionModel(const QString& completion)
     compareText = compareText.mid(dot+1);
     }
 
+  qDebug() << "lookup" << lookup;
+  qDebug() << "compareText" << compareText;
+
   // Lookup python names
   QStringList attrs;
   if (!lookup.isEmpty() || !compareText.isEmpty())
     {
-    bool appendParenthesis = true;
     attrs = this->PythonManager.pythonAttributes(lookup, QLatin1String("__main__"), appendParenthesis);
     attrs << this->PythonManager.pythonAttributes(lookup, QLatin1String("__main__.__builtins__"),
                                                   appendParenthesis);
     attrs.removeDuplicates();
     }
+
+  qDebug() << "attrs" << attrs;
 
   // Initialize the completion model
   if (!attrs.isEmpty())
