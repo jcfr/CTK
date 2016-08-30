@@ -338,11 +338,51 @@ void ctkAbstractPythonManager::setInitializationFunction(void (*initFunction)())
   d->InitFunction = initFunction;
 }
 
+namespace
+{
+QStringList dir_object(PyObject* object, bool appendParenthesis = false)
+{
+  QStringList results;
+  if (!object)
+    {
+    return results;
+    }
+  PyObject* keys = PyObject_Dir(object);
+  if (keys)
+    {
+    PyObject* key;
+    PyObject* value;
+    int nKeys = PyList_Size(keys);
+    for (int i = 0; i < nKeys; ++i)
+      {
+      key = PyList_GetItem(keys, i);
+      value = PyObject_GetAttr(object, key);
+      if (!value)
+        {
+        continue;
+        }
+      QString key_str(PyString_AsString(key));
+      // Append "()" if the associated object is a function
+      if (appendParenthesis && PyCallable_Check(value))
+        {
+        key_str.append("()");
+        }
+      results << key_str;
+      Py_DECREF(value);
+      }
+    Py_DECREF(keys);
+    }
+  return results;
+}
+}
+
 //----------------------------------------------------------------------------
 QStringList ctkAbstractPythonManager::pythonAttributes(const QString& pythonVariableName,
                                                        const QString& module,
                                                        bool appendParenthesis) const
 {
+  QStringList results;
+
   Q_ASSERT(PyThreadState_GET()->interp);
   PyObject* dict = PyImport_GetModuleDict();
 
@@ -384,18 +424,20 @@ QStringList ctkAbstractPythonManager::pythonAttributes(const QString& pythonVari
     PyObject* classObject = object;
     for (int i = 0; i < tmpNames.size() && object; ++i)
       {
-      bool classInstantiated=false;
+      qDebug() << "tmpNames[" << i << "]" << tmpNames[i];
+      bool classInstantiated = false;
+      PythonQtObjectPtr self;
       if (tmpNames[i].contains("()"))
         {
         tmpNames[i].remove("()");
-        qDebug() << "tmpNames ["<<i<<"]" << tmpNames[i];
+        //qDebug() << "tmpNames ["<<i<<"]" << tmpNames[i];
         PyObject* classObject = ctkAbstractPythonManager::pythonModule(tmpNames[i]);
-        classObject = PyDict_GetItemString(dict, tmpNames[i].toLatin1().data());
+        QString objectName = tmpNames[i];
+        classObject = PyDict_GetItemString(dict, objectName.toLatin1().data());
 
         PyObject * arguments = PyTuple_New(0);
 
         // Attempt to instantiate the associated python class
-        PythonQtObjectPtr self;
         PyObject* classToInstantiate = classObject;
         if (classToInstantiate)
           {
@@ -410,7 +452,19 @@ QStringList ctkAbstractPythonManager::pythonAttributes(const QString& pythonVari
             qDebug() << "PyInstanceNew" << classToInstantiate;
             self.setNewRef(PyInstance_New(classToInstantiate, arguments, 0));
             }
+          if (!self)
+            {
+            qWarning() << "[ERROR] Failed to instantiate" << classToInstantiate;
+            }
           qDebug() << "self.object()" << self.object();
+          if (!PyObject_HasAttrString(self.object(), "bar_instance_member"))
+            {
+            qWarning() << "[ERROR] Instantiated object" << objectName << classToInstantiate << " - Failed to lookup 'bar_instance_member'";
+            }
+          else
+            {
+            qDebug() << "[OK] Successfull lookup 'bar_instance_member' on " << objectName << classToInstantiate << "instance";
+            }
           if (self.object())
             {
             object = self.object();
@@ -419,31 +473,13 @@ QStringList ctkAbstractPythonManager::pythonAttributes(const QString& pythonVari
           }
         Py_DECREF(arguments);
 
-        qDebug() << "\n*********************\nobject" << object;
-        qDebug() << "classObject" << classObject;
-        qDebug() << "classToInstantiate" << classToInstantiate
-                 << "\n*********************\n";
-        /*
-        if (classObject)
+        if (classInstantiated)
           {
-          classObjectInstanciated = PyObject_CallObject(classObject,0);
-          if (PyObject_IsInstance(classObjectInstanciated, classObject))
-            qDebug() << "\n~~~~~~~~~~ IT'S INSTANCIATED ~~~~~~~~~\n";
+          return dir_object(self.object());
           }
-        qDebug() << "\n*********************\nobject" << object;
-        qDebug() << "classObject" << classObject;
-        qDebug() << "classObjectInstanciated" << classObjectInstanciated
-                 << "\n*********************\n";
-        if (classObjectInstanciated)
-          {
-          object = classObjectInstanciated;
-          }
-        */
         }
 
-      qDebug() << "DIR" << PyObject_Dir(object) << " de l'objet" << object;
       QByteArray tmpName = tmpNames.at(i).toLatin1();
-      qDebug() << "tmpName" << tmpName;
       PyObject* prevObj = object;
       if (PyDict_Check(object))
         {
@@ -456,46 +492,13 @@ QStringList ctkAbstractPythonManager::pythonAttributes(const QString& pythonVari
         qDebug() << "else object" << object;
         object = PyObject_GetAttrString(object, tmpName.data());
         }
-      qDebug() << "avant pyDcref object" << object << "prevObj" << prevObj;
-      //if (classInstantiated)
-        //object = prevObj;
       Py_DECREF(prevObj);
       }
-    qDebug() << "BEFORE CLEAR object" << object;
     PyErr_Clear();
     }
-  /*if (classObjectInstanciated)
-      object = classObjectInstanciated;*/
-  qDebug() << "IF object" << object;
-  QStringList results;
+  results = dir_object(object);
   if (object)
     {
-    qDebug() << "object for dir" << object;
-    PyObject* keys = PyObject_Dir(object);
-    if (keys)
-      {
-      PyObject* key;
-      PyObject* value;
-      int nKeys = PyList_Size(keys);
-      for (int i = 0; i < nKeys; ++i)
-        {
-        key = PyList_GetItem(keys, i);
-        value = PyObject_GetAttr(object, key);
-        if (!value)
-          {
-          continue;
-          }
-        QString key_str(PyString_AsString(key));
-        // Append "()" if the associated object is a function
-        if (appendParenthesis && PyCallable_Check(value))
-          {
-          key_str.append("()");
-          }
-        results << key_str;
-        Py_DECREF(value);
-        }
-      Py_DECREF(keys);
-      }
     Py_DECREF(object);
     }
   return results;
