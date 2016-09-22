@@ -76,13 +76,39 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 //----------------------------------------------------------------------------
+// ctkPythonConsolePrivate
+
+//----------------------------------------------------------------------------
+class ctkPythonConsolePrivate : public ctkConsolePrivate
+{
+  Q_DECLARE_PUBLIC(ctkPythonConsole);
+public:
+  ctkPythonConsolePrivate(ctkPythonConsole& object);
+  ~ctkPythonConsolePrivate();
+
+  void initializeInteractiveConsole();
+
+  bool push(const QString& code);
+
+  /// Reset the input buffer of the interactive console
+//  void resetInputBuffer();
+
+  void printWelcomeMessage();
+
+  ctkAbstractPythonManager* PythonManager;
+
+  PyObject*                 InteractiveConsole;
+};
+
+//----------------------------------------------------------------------------
 // ctkPythonConsoleCompleter
 
 //----------------------------------------------------------------------------
 class ctkPythonConsoleCompleter : public ctkConsoleCompleter
 {
 public:
-  ctkPythonConsoleCompleter(ctkAbstractPythonManager& pythonManager);
+  ctkPythonConsoleCompleter(ctkAbstractPythonManager& pythonManager,
+                            ctkPythonConsolePrivate* pythonConsolePrivate);
 
   virtual int cursorOffset(const QString& completion);
   virtual void updateCompletionModel(const QString& completion);
@@ -97,11 +123,14 @@ protected:
   int parameterCountFromDocumentation(const QString& pythonFunctionPath);
 
   ctkAbstractPythonManager& PythonManager;
+  ctkPythonConsolePrivate* PythonConsolePrivate;
 };
 
 //----------------------------------------------------------------------------
-ctkPythonConsoleCompleter::ctkPythonConsoleCompleter(ctkAbstractPythonManager& pythonManager)
-  : PythonManager(pythonManager)
+ctkPythonConsoleCompleter::ctkPythonConsoleCompleter(
+    ctkAbstractPythonManager& pythonManager,
+    ctkPythonConsolePrivate* pythonConsolePrivate)
+  : PythonManager(pythonManager), PythonConsolePrivate(pythonConsolePrivate)
   {
   this->setParent(&pythonManager);
   }
@@ -369,31 +398,6 @@ void ctkPythonConsoleCompleter::updateCompletionModel(const QString& completion)
 }
 
 //----------------------------------------------------------------------------
-// ctkPythonConsolePrivate
-
-//----------------------------------------------------------------------------
-class ctkPythonConsolePrivate : public ctkConsolePrivate
-{
-  Q_DECLARE_PUBLIC(ctkPythonConsole);
-public:
-  ctkPythonConsolePrivate(ctkPythonConsole& object);
-  ~ctkPythonConsolePrivate();
-
-  void initializeInteractiveConsole();
-
-  bool push(const QString& code);
-
-  /// Reset the input buffer of the interactive console
-//  void resetInputBuffer();
-
-  void printWelcomeMessage();
-
-  ctkAbstractPythonManager* PythonManager;
-
-  PyObject*                 InteractiveConsole;
-};
-
-//----------------------------------------------------------------------------
 // ctkPythonConsolePrivate methods
 
 //----------------------------------------------------------------------------
@@ -519,7 +523,7 @@ void ctkPythonConsole::initialize(ctkAbstractPythonManager* newPythonManager)
   newPythonManager->mainContext();
   Q_ASSERT(PythonQt::self()); // PythonQt should be initialized
 
-  ctkPythonConsoleCompleter* completer = new ctkPythonConsoleCompleter(*newPythonManager);
+  ctkPythonConsoleCompleter* completer = new ctkPythonConsoleCompleter(*newPythonManager, d);
   this->setCompleter(completer);
 
   d->PythonManager = newPythonManager;
