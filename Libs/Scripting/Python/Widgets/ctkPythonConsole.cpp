@@ -340,6 +340,10 @@ void ctkPythonConsoleCompleter::updateCompletionModel(const QString& completion)
     attrs.removeDuplicates();
     }
 
+  this->PythonConsolePrivate->textCursor().insertText("\n");
+  PyRun_SimpleString("print('Test')");
+  this->PythonConsolePrivate->printOutputMessage("Hola");
+
   // Initialize the completion model
   if (!attrs.isEmpty())
     {

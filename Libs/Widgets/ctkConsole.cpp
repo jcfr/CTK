@@ -541,6 +541,7 @@ void ctkConsolePrivate::updateCompleter()
     // Get the text between the current cursor position
     // and the start of the line
     QTextCursor text_cursor = this->textCursor();
+    qDebug() <<"\n***************";
     text_cursor.setPosition(this->InteractivePosition, QTextCursor::KeepAnchor);
     QString commandText = text_cursor.selectedText();
 
@@ -567,6 +568,9 @@ void ctkConsolePrivate::updateCompleter()
       // current word and then translate it down 8 pixels.
       text_cursor = this->textCursor();
       text_cursor.movePosition(QTextCursor::StartOfWord);
+
+      qDebug() << "1- after move - text_cursor.position()" << text_cursor.position();
+
       QRect cr = this->cursorRect(text_cursor);
       cr.translate(0,8);
       cr.setWidth(this->Completer->popup()->sizeHintForColumn(0)
@@ -756,6 +760,7 @@ void ctkConsolePrivate::insertCompletion(const QString& completion)
 {
   Q_Q(ctkConsole);
   QTextCursor tc = this->textCursor();
+  qDebug() << "[insertCompletion] completion" << completion;
   tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
   if (tc.selectedText()==".")
     {
@@ -779,6 +784,8 @@ void ctkConsolePrivate::insertCompletion(const QString& completion)
   int cursorOffset = this->Completer->cursorOffset(shellLine);
   tc.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, cursorOffset);
   this->setTextCursor(tc);
+  qDebug() << "[insertCompletion] completion" << completion;
+  qDebug() << "[insertCompletion] position" << this->textCursor().position();
   this->updateCommandBuffer(completion.length());
 }
 
