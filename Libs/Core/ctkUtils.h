@@ -64,6 +64,11 @@ void CTK_CORE_EXPORT stlVectorToQList(const std::vector<std::string>& vector, QS
 
 ///
 /// \ingroup Core
+/// Convert a QStringList to a set
+QSet<QString> CTK_CORE_EXPORT qListToQSet(const QStringList& list);
+
+///
+/// \ingroup Core
 /// Convert a nameFilter to a list of file extensions:
 /// "Images (*.png *.jpg *.tiff)" -> "*.png", "*.jpg", "*.tiff"
 /// Note: the nameFilter can be a simple wildcard "*.jpg" in that case, it
