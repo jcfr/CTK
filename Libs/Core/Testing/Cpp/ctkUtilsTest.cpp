@@ -44,6 +44,9 @@ private slots:
 
   void testQListToQSet();
   void testQListToQSet_data();
+
+  void testQSetToQList();
+  void testQSetToQList_data();
 };
 
 // ----------------------------------------------------------------------------
@@ -270,6 +273,29 @@ void ctkUtilsTester::testQListToQSet_data()
   QTest::newRow("0")
       << (QStringList() << "foo" << "bar" << "foo")
       << (QSet<QString>() << "foo" << "bar");
+}
+
+// ----------------------------------------------------------------------------
+void ctkUtilsTester::testQSetToQList()
+{
+  QFETCH(QSet<QString>, input);
+  QFETCH(QStringList, output);
+
+  QStringList current = ctk::qSetToQList(input);
+  current.sort();
+
+  QCOMPARE(current, output);
+}
+
+// ----------------------------------------------------------------------------
+void ctkUtilsTester::testQSetToQList_data()
+{
+  QTest::addColumn< QSet<QString> >("input");
+  QTest::addColumn< QStringList >("output");
+
+  QTest::newRow("0")
+      << (QSet<QString>() << "foo" << "bar")
+      << (QStringList() << "bar" << "foo");
 }
 
 // ----------------------------------------------------------------------------

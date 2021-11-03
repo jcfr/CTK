@@ -69,6 +69,12 @@ QSet<QString> CTK_CORE_EXPORT qListToQSet(const QStringList& list);
 
 ///
 /// \ingroup Core
+/// Convert a set of strings to a QStringList
+QStringList CTK_CORE_EXPORT qSetToQList(const QSet<QString>& set);
+
+
+///
+/// \ingroup Core
 /// Convert a nameFilter to a list of file extensions:
 /// "Images (*.png *.jpg *.tiff)" -> "*.png", "*.jpg", "*.tiff"
 /// Note: the nameFilter can be a simple wildcard "*.jpg" in that case, it
