@@ -267,7 +267,7 @@ void ctkDICOMIndexerPrivateWorker::writeIndexingResultsToDatabase(ctkDICOMDataba
 //------------------------------------------------------------------------------
 ctkDICOMIndexerPrivate::ctkDICOMIndexerPrivate(ctkDICOMIndexer& o)
   : q_ptr(&o)
-  , Database(nullptr)
+  , Database(CTK_NULLPTR)
   , BackgroundImportEnabled(false)
 {
   ctkDICOMIndexerPrivateWorker* worker = new ctkDICOMIndexerPrivateWorker(&this->RequestQueue);
@@ -293,7 +293,7 @@ ctkDICOMIndexerPrivate::~ctkDICOMIndexerPrivate()
   this->RequestQueue.setStopRequested(true);
   this->WorkerThread.quit();
   this->WorkerThread.wait();
-  q->setDatabase(nullptr);
+  q->setDatabase(CTK_NULLPTR);
 }
 
 //------------------------------------------------------------------------------
