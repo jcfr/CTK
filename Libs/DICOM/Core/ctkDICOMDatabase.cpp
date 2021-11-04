@@ -3259,3 +3259,11 @@ QString ctkDICOMDatabase::compositePatientID(const QString& patientID, const QSt
 {
   return QString("%1~%2~%3").arg(patientID).arg(patientsBirthDate).arg(patientsName);
 }
+
+//------------------------------------------------------------------------------
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
+void ctkDICOMDatabase::emitDatabaseChanged()
+{
+  emit databaseChanged();
+}
+#endif

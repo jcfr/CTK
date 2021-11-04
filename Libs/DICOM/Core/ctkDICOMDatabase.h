@@ -394,6 +394,12 @@ public:
   /// inserted under the same patient.
   Q_INVOKABLE static QString compositePatientID(const QString& patientID, const QString& patientsName, const QString& patientsBirthDate);
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
+  /// This is required to support Qt4 because signals are protected and can't be emitted
+  /// from non-friend classes.
+  void emitDatabaseChanged();
+#endif
+
 Q_SIGNALS:
 
   /// Things inserted to database.

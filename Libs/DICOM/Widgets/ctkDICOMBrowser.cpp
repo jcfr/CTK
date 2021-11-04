@@ -901,7 +901,11 @@ void ctkDICOMBrowser::onRepairAction()
   repairMessageBox->deleteLater();
 
   // Force refresh of table views
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
   d->DICOMDatabase->databaseChanged();
+#else
+  d->DICOMDatabase->emitDatabaseChanged();
+#endif
 }
 
 //----------------------------------------------------------------------------
