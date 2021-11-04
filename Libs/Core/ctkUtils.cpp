@@ -79,6 +79,26 @@ void ctk::stlVectorToQList(const std::vector<std::string>& vector,
   std::transform(vector.begin(),vector.end(),std::back_inserter(list),&QString::fromStdString);
 }
 
+//------------------------------------------------------------------------------
+QSet<QString> ctk::qListToQSet(const QStringList& list)
+{
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+  return QSet<QString>(list.begin(), list.end());
+#else
+  return list.toSet();
+#endif
+}
+
+//------------------------------------------------------------------------------
+QStringList ctk::qSetToQList(const QSet<QString>& set)
+{
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+  return QList<QString>(set.begin(), set.end());
+#else
+  return QStringList::fromSet(set);
+#endif
+}
+
 //-----------------------------------------------------------------------------
 const char *ctkNameFilterRegExp =
   "^(.*)\\(([a-zA-Z0-9_.*? +;#\\-\\[\\]@\\{\\}/!<>\\$%&=^~:\\|]*)\\)$";
