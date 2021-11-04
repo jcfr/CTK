@@ -25,6 +25,7 @@
 #include <QStringList>
 #include <QDateTime>
 #include <QDebug>
+#include <QDir>
 
 // STD includes
 #include <vector>
@@ -148,6 +149,12 @@ bool CTK_CORE_EXPORT removeDirRecursively(const QString & dirName);
 /// \return <code>true</code> on success, <code>false</code> otherwise.
 /// \sa QFile::copy
 bool CTK_CORE_EXPORT copyDirRecursively(const QString &srcPath, const QString &dstPath, bool includeHiddenFiles=true);
+
+///
+/// \ingroup Core
+/// \brief Returns whether the directory is empty.
+bool CTK_CORE_EXPORT isDirEmpty(const QDir& directory);
+
 
 ///
 /// \ingroup Core
