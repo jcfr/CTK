@@ -27,8 +27,6 @@ set(KIT_SRCS
   ctkDICOMListenerWidget.h
   ctkDICOMQueryResultsTabWidget.cpp
   ctkDICOMQueryResultsTabWidget.h
-  ctkDICOMQueryRetrieveWidget.cpp
-  ctkDICOMQueryRetrieveWidget.h
   ctkDICOMQueryWidget.cpp
   ctkDICOMQueryWidget.h
   ctkDICOMObjectListWidget.cpp
@@ -55,7 +53,6 @@ set(KIT_MOC_SRCS
   ctkDICOMImportWidget.h
   ctkDICOMObjectListWidget.h
   ctkDICOMObjectModel.h
-  ctkDICOMQueryRetrieveWidget.h
   ctkDICOMQueryWidget.h
   ctkDICOMServerNodeWidget.h
   ctkDICOMTableManager.h
@@ -71,13 +68,30 @@ set(KIT_UI_FORMS
   Resources/UI/ctkDICOMDirectoryListWidget.ui
   Resources/UI/ctkDICOMImportWidget.ui
   Resources/UI/ctkDICOMListenerWidget.ui
-  Resources/UI/ctkDICOMQueryRetrieveWidget.ui
   Resources/UI/ctkDICOMQueryWidget.ui
   Resources/UI/ctkDICOMObjectListWidget.ui
   Resources/UI/ctkDICOMServerNodeWidget.ui
   Resources/UI/ctkDICOMTableManager.ui
   Resources/UI/ctkDICOMTableView.ui
 )
+
+if(CTK_QT_VERSION VERSION_GREATER "4")
+  # Source files
+  list(APPEND KIT_SRCS
+    ctkDICOMQueryRetrieveWidget.cpp
+    ctkDICOMQueryRetrieveWidget.h
+    )
+
+  # Headers that should run through moc
+  list(APPEND KIT_MOC_SRCS
+    ctkDICOMQueryRetrieveWidget.h
+    )
+
+  # UI files - includes new widgets
+  list(APPEND KIT_UI_FORMS
+    Resources/UI/ctkDICOMQueryRetrieveWidget.ui
+    )
+endif()
 
 # Resources
 set(KIT_resources

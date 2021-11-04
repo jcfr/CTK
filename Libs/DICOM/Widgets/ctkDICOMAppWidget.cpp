@@ -55,7 +55,9 @@
 #include "ctkDICOMThumbnailGenerator.h"
 #include "ctkThumbnailLabel.h"
 #include "ctkDICOMQueryResultsTabWidget.h"
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 #include "ctkDICOMQueryRetrieveWidget.h"
+#endif
 #include "ctkDICOMQueryWidget.h"
 
 #include "ui_ctkDICOMAppWidget.h"
@@ -77,7 +79,9 @@ public:
   ~ctkDICOMAppWidgetPrivate();
 
   ctkFileDialog* ImportDialog;
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   ctkDICOMQueryRetrieveWidget* QueryRetrieveWidget;
+#endif
 
   QSharedPointer<ctkDICOMDatabase> DICOMDatabase;
   QSharedPointer<ctkDICOMThumbnailGenerator> ThumbnailGenerator;
@@ -273,8 +277,10 @@ ctkDICOMAppWidget::ctkDICOMAppWidget(QWidget* _parent):Superclass(_parent),
   d->ToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
   //Initialize Q/R widget
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   d->QueryRetrieveWidget = new ctkDICOMQueryRetrieveWidget();
   d->QueryRetrieveWidget->setWindowModality ( Qt::ApplicationModal );
+#endif
 
   //initialize directory from settings, then listen for changes
   QSettings settings;
@@ -308,8 +314,10 @@ ctkDICOMAppWidget::ctkDICOMAppWidget(QWidget* _parent):Superclass(_parent),
   connect(d->ThumbnailsWidget, SIGNAL(doubleClicked(ctkThumbnailLabel)), this, SLOT(onThumbnailDoubleClicked(ctkThumbnailLabel)));
   connect(d->ImportDialog, SIGNAL(fileSelected(QString)),this,SLOT(onImportDirectory(QString)));
 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   connect(d->QueryRetrieveWidget, SIGNAL(canceled()), d->QueryRetrieveWidget, SLOT(hide()) );
   connect(d->QueryRetrieveWidget, SIGNAL(canceled()), this, SLOT(onQueryRetrieveFinished()) );
+#endif
 
   connect(d->ImagePreview, SIGNAL(requestNextImage()), this, SLOT(onNextImage()));
   connect(d->ImagePreview, SIGNAL(requestPreviousImage()), this, SLOT(onPreviousImage()));
@@ -325,7 +333,9 @@ ctkDICOMAppWidget::~ctkDICOMAppWidget()
 {
   Q_D(ctkDICOMAppWidget);
 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   d->QueryRetrieveWidget->deleteLater();
+#endif
   d->ImportDialog->deleteLater();
 }
 
@@ -421,7 +431,9 @@ void ctkDICOMAppWidget::setDatabaseDirectory(const QString& directory)
 
   //pass DICOM database instance to Import widget
   // d->ImportDialog->setDICOMDatabase(d->DICOMDatabase);
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   d->QueryRetrieveWidget->setRetrieveDatabase(d->DICOMDatabase);
+#endif
 
   // update the button and let any connected slots know about the change
   d->DirectoryButton->setDirectory(directory);
@@ -527,8 +539,12 @@ void ctkDICOMAppWidget::openQueryDialog()
 {
   Q_D(ctkDICOMAppWidget);
 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   d->QueryRetrieveWidget->show();
   d->QueryRetrieveWidget->raise();
+#else
+  qWarning() << Q_FUNC_INFO << ": The Query Retrieve dialog is only available when building against Qt 5";
+#endif
 
 }
 
@@ -545,8 +561,6 @@ void ctkDICOMAppWidget::onRemoveAction()
 {
   Q_D(ctkDICOMAppWidget);
 
-  //d->QueryRetrieveWidget->show();
-  // d->QueryRetrieveWidget->raise();
   std::cout << "on remove" << std::endl;
   QModelIndexList selection = d->TreeView->selectionModel()->selectedIndexes();
   std::cout << selection.size() << std::endl;

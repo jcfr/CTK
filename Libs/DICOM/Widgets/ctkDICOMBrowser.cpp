@@ -58,7 +58,9 @@
 #include "ctkDICOMBrowser.h"
 #include "ctkDICOMObjectListWidget.h"
 #include "ctkDICOMQueryResultsTabWidget.h"
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 #include "ctkDICOMQueryRetrieveWidget.h"
+#endif
 #include "ctkDICOMQueryWidget.h"
 #include "ctkDICOMTableManager.h"
 #include "ctkDICOMTableView.h"
@@ -141,7 +143,9 @@ public:
   ctkFileDialog* ImportDialog;
   ctkDICOMMetadataDialog* MetadataDialog;
 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   ctkDICOMQueryRetrieveWidget* QueryRetrieveWidget;
+#endif
 
   QSharedPointer<ctkDICOMDatabase> DICOMDatabase;
   QSharedPointer<ctkDICOMIndexer> DICOMIndexer;
@@ -213,7 +217,9 @@ ctkDICOMBrowserPrivate::ctkDICOMBrowserPrivate(ctkDICOMBrowser* parent, QSharedP
   : q_ptr(parent)
   , ImportDialog(0)
   , MetadataDialog(0)
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   , QueryRetrieveWidget(0)
+#endif
   , DICOMDatabase(database)
   , DICOMIndexer( QSharedPointer<ctkDICOMIndexer>(new ctkDICOMIndexer) )
   , UpdateSchemaProgress(0)
@@ -325,9 +331,11 @@ void ctkDICOMBrowserPrivate::init()
   this->ToolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
   // Initialize Q/R widget
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   this->QueryRetrieveWidget = new ctkDICOMQueryRetrieveWidget();
   this->QueryRetrieveWidget->setWindowModality ( Qt::ApplicationModal );
   this->QueryRetrieveWidget->useProgressDialog(true);
+#endif
 
   this->dicomTableManager->setDICOMDatabase(this->DICOMDatabase.data());
 
@@ -393,8 +401,10 @@ void ctkDICOMBrowserPrivate::init()
   q->connect(importDirectoryModeComboBox, SIGNAL(currentIndexChanged(int)),
           q, SLOT(onImportDirectoryComboBoxCurrentIndexChanged(int)));
 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   q->connect(this->QueryRetrieveWidget, SIGNAL(canceled()), this->QueryRetrieveWidget, SLOT(hide()) );
   q->connect(this->QueryRetrieveWidget, SIGNAL(canceled()), q, SLOT(onQueryRetrieveFinished()) );
+#endif
 }
 
 //----------------------------------------------------------------------------
@@ -423,7 +433,9 @@ ctkDICOMBrowser::~ctkDICOMBrowser()
 {
   Q_D(ctkDICOMBrowser);
 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   d->QueryRetrieveWidget->deleteLater();
+#endif
   d->ImportDialog->deleteLater();
   d->MetadataDialog->deleteLater();
 }
@@ -692,7 +704,9 @@ void ctkDICOMBrowser::setDatabaseDirectory(const QString& directory)
   }
 
   // pass DICOM database instance to Import widget
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   d->QueryRetrieveWidget->setRetrieveDatabase(d->DICOMDatabase);
+#endif
 
   // update the button and let any connected slots know about the change
   bool wasBlocked = d->DirectoryButton->blockSignals(true);
@@ -786,9 +800,13 @@ void ctkDICOMBrowser::openQueryDialog()
 {
   Q_D(ctkDICOMBrowser);
 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   // QueryRetrieveWidget is a QWidget not a QDialog, so use this instead of exec
   d->QueryRetrieveWidget->show();
   d->QueryRetrieveWidget->raise();
+#else
+  qWarning() << Q_FUNC_INFO << ": The Query Retrieve dialog is only available when building against Qt 5";
+#endif
 }
 
 //----------------------------------------------------------------------------

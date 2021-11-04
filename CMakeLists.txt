@@ -575,9 +575,11 @@ ctk_app_option(ctkDICOMRetrieve
                "Build the DICOM example application" OFF
                CTK_ENABLE_DICOM AND CTK_BUILD_EXAMPLES)
 
+if(CTK_QT_VERSION VERSION_GREATER "4")
 ctk_app_option(ctkDICOMQueryRetrieve
                "Build the DICOM example application" OFF
                CTK_ENABLE_DICOM AND CTK_BUILD_EXAMPLES)
+endif()
 
 ctk_app_option(ctkDICOMHost
                "Build the DICOM application host example application" OFF

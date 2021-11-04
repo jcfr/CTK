@@ -1,6 +1,6 @@
 set(KIT ${PROJECT_NAME})
 
-create_test_sourcelist(Tests ${KIT}CppTests.cpp
+set(KITTests_SRCS
   ctkDICOMAppWidgetTest1.cpp
   ctkDICOMBrowserTest.cpp
   ctkDICOMBrowserTest1.cpp
@@ -12,9 +12,18 @@ create_test_sourcelist(Tests ${KIT}CppTests.cpp
   ctkDICOMModelTest2.cpp
   ctkDICOMObjectModelTest1.cpp
   ctkDICOMQueryResultsTabWidgetTest1.cpp
-  ctkDICOMQueryRetrieveWidgetTest1.cpp
   ctkDICOMServerNodeWidgetTest1.cpp
   ctkDICOMThumbnailListWidgetTest1.cpp
+  )
+
+if(CTK_QT_VERSION VERSION_GREATER "4")
+  list(APPEND KITTests_SRCS
+    ctkDICOMQueryRetrieveWidgetTest1.cpp
+    )
+endif()
+
+create_test_sourcelist(Tests ${KIT}CppTests.cpp
+  ${KITTests_SRCS}
   )
 
 set(Tests_MOC_CPPS
@@ -55,7 +64,9 @@ SIMPLE_TEST(ctkDICOMModelTest2
   ${CMAKE_CURRENT_BINARY_DIR}/dicom.db
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../Core/Resources/dicom-sample.sql
   )
+if(CTK_QT_VERSION VERSION_GREATER "4")
 SIMPLE_TEST(ctkDICOMQueryRetrieveWidgetTest1)
+endif()
 SIMPLE_TEST(ctkDICOMQueryResultsTabWidgetTest1)
 SIMPLE_TEST(ctkDICOMThumbnailListWidgetTest1
   ${CMAKE_CURRENT_BINARY_DIR}/dicom.db

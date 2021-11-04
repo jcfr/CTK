@@ -13,9 +13,6 @@ set(PLUGIN_SRCS
   ctkDICOMWidgetsAbstractPlugin.cpp
   ctkDICOMWidgetsAbstractPlugin.h
 
-  ctkDICOMQueryRetrieveWidgetPlugin.cpp
-  ctkDICOMQueryRetrieveWidgetPlugin.h
-
   ctkDICOMTableManagerPlugin.cpp
   ctkDICOMTableManagerPlugin.h
   ctkDICOMTableViewPlugin.cpp
@@ -26,7 +23,6 @@ set(PLUGIN_SRCS
 set(PLUGIN_MOC_SRCS
   ctkDICOMWidgetsPlugins.h
 
-  ctkDICOMQueryRetrieveWidgetPlugin.h
   ctkDICOMTableManagerPlugin.h
   ctkDICOMTableViewPlugin.h
   )
@@ -34,6 +30,19 @@ set(PLUGIN_MOC_SRCS
 # Resources
 set(PLUGIN_resources
 )
+
+if(CTK_QT_VERSION VERSION_GREATER "4")
+  # Source files
+  list(APPEND PLUGIN_SRCS
+    ctkDICOMQueryRetrieveWidgetPlugin.cpp
+    ctkDICOMQueryRetrieveWidgetPlugin.h
+    )
+
+  # Headers that should run through moc
+  list(APPEND PLUGIN_MOC_SRCS
+    ctkDICOMQueryRetrieveWidgetPlugin.h
+    )
+endif()
 
 # Target libraries
 set(PLUGIN_target_libraries

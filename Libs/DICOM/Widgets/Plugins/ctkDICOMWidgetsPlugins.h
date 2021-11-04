@@ -31,7 +31,9 @@
 
 // CTK includes
 #include "ctkDICOMWidgetsPluginsExport.h"
+#ifdef HAVE_QT5
 #include "ctkDICOMQueryRetrieveWidgetPlugin.h"
+#endif
 #include "ctkDICOMTableManagerPlugin.h"
 #include "ctkDICOMTableViewPlugin.h"
 
@@ -50,7 +52,9 @@ public:
   QList<QDesignerCustomWidgetInterface*> customWidgets() const
     {
     QList<QDesignerCustomWidgetInterface *> plugins;
+#ifdef HAVE_QT5
     plugins << new ctkDICOMQueryRetrieveWidgetPlugin;
+#endif
     plugins << new ctkDICOMTableManagerPlugin;
     plugins << new ctkDICOMTableViewPlugin;
     return plugins;
