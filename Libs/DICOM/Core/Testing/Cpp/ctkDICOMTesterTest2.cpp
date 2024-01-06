@@ -39,7 +39,7 @@ int ctkDICOMTesterTest2(int argc, char * argv [])
   QCoreApplication app(argc, argv);
 
   QStringList arguments = app.arguments();
-  arguments.pop_front();
+  arguments.pop_front(); // remove application name
   if (!arguments.count())
     {
     ctkDICOMTesterTest2PrintUsage();
