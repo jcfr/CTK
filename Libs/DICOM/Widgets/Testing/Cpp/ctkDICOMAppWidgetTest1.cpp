@@ -43,7 +43,15 @@
 int ctkDICOMAppWidgetTest1( int argc, char * argv [] )
 {
   QApplication app(argc, argv);
-  
+
+  qDebug() << "argc = " << argc;
+  for (int i = 0; i < argc; ++i)
+    {
+    qDebug() << "\t" << argv[i];
+    }
+
+  qDebug() << "Importing directory " << argv[1];
+
   ctkDICOMAppWidget appWidget;
 
   QFileInfo tempFileInfo(QDir::tempPath() + QString("/ctkDICOMAppWidgetTest1-db"));
@@ -66,9 +74,9 @@ int ctkDICOMAppWidgetTest1( int argc, char * argv [] )
   appWidget.openQueryDialog();
 
   appWidget.openQueryDialog();
-  
+
   appWidget.setDisplayImportSummary(false);
-  appWidget.onImportDirectory(argv[argc -1]);
+  appWidget.onImportDirectory(argv[1]);
   if ( appWidget.patientsAddedDuringImport() != 1
     || appWidget.studiesAddedDuringImport() != 1
     || appWidget.seriesAddedDuringImport() != 1

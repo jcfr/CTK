@@ -649,10 +649,6 @@ void ctkDICOMAppWidget::onImportDirectory(QString directory)
   Q_D(ctkDICOMAppWidget);
   if (QDir(directory).exists())
     {
-    QCheckBox* copyOnImport = qobject_cast<QCheckBox*>(d->ImportDialog->bottomWidget());
-    QString targetDirectory;
-    bool copyFiles = (copyOnImport->checkState() == Qt::Checked);
-
     // reset counts
     d->PatientsAddedDuringImport = 0;
     d->StudiesAddedDuringImport = 0;
@@ -661,8 +657,7 @@ void ctkDICOMAppWidget::onImportDirectory(QString directory)
 
     // show progress dialog and perform indexing
     d->showIndexerDialog();
-
-    d->DICOMIndexer->addDirectory(directory, copyFiles);
+    d->DICOMIndexer->addDirectory(directory);
 
     // display summary result
     if (d->DisplayImportSummary)
