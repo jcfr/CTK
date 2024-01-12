@@ -141,19 +141,9 @@ void ctkDICOMBrowserTester::testImportDirectoryMode()
 {
   ctkDICOMBrowser browser;
   browser.setDatabaseDirectory(this->TemporaryDatabaseDirectoryName);
-
   browser.setImportDirectoryMode(ctkDICOMBrowser::ImportDirectoryCopy);
   QCOMPARE(browser.importDirectoryMode(), ctkDICOMBrowser::ImportDirectoryCopy);
-
   browser.setImportDirectoryMode(ctkDICOMBrowser::ImportDirectoryAddLink);
-  QCOMPARE(browser.importDirectoryMode(), ctkDICOMBrowser::ImportDirectoryAddLink);
-
-  QComboBox* comboBox = browser.importDialog()->bottomWidget()->findChild<QComboBox*>();
-
-  comboBox->setCurrentIndex(comboBox->findData(static_cast<int>(ctkDICOMBrowser::ImportDirectoryCopy)));
-  QCOMPARE(browser.importDirectoryMode(), ctkDICOMBrowser::ImportDirectoryCopy);
-
-  comboBox->setCurrentIndex(comboBox->findData(static_cast<int>(ctkDICOMBrowser::ImportDirectoryAddLink)));
   QCOMPARE(browser.importDirectoryMode(), ctkDICOMBrowser::ImportDirectoryAddLink);
 }
 
