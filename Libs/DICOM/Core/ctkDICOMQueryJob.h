@@ -24,7 +24,7 @@
 #ifndef __ctkDICOMQueryJob_h
 #define __ctkDICOMQueryJob_h
 
-// Qt includes 
+// Qt includes
 #include <QObject>
 #include <QMap>
 #include <QVariant>

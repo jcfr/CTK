@@ -24,7 +24,7 @@
 #ifndef __ctkDICOMRetrieveWorker_h
 #define __ctkDICOMRetrieveWorker_h
 
-// Qt includes 
+// Qt includes
 #include <QObject>
 #include <QSharedPointer>
 

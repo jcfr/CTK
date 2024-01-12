@@ -24,7 +24,7 @@
 #ifndef __ctkDICOMInserterWorker_h
 #define __ctkDICOMInserterWorker_h
 
-// Qt includes 
+// Qt includes
 #include <QObject>
 #include <QMap>
 #include <QVariant>

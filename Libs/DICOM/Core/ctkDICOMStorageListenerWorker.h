@@ -24,7 +24,7 @@
 #ifndef __ctkDICOMStorageListenerWorker_h
 #define __ctkDICOMStorageListenerWorker_h
 
-// Qt includes 
+// Qt includes
 #include <QObject>
 #include <QVariant>
 #include <QSharedPointer>

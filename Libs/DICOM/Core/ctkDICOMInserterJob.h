@@ -24,7 +24,7 @@
 #ifndef __ctkDICOMInserterJob_h
 #define __ctkDICOMInserterJob_h
 
-// Qt includes 
+// Qt includes
 #include <QObject>
 #include <QSharedPointer>
 
@@ -47,7 +47,7 @@ public:
   typedef ctkDICOMJob Superclass;
   explicit ctkDICOMInserterJob();
   virtual ~ctkDICOMInserterJob();
-  
+
   /// Logger report string formatting for specific task
   Q_INVOKABLE QString loggerReport(const QString& status) const;
 
