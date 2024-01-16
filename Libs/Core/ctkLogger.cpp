@@ -38,7 +38,11 @@ public:
 //-----------------------------------------------------------------------------
 ctkLoggerPrivate::ctkLoggerPrivate()
 {
+#ifndef NDEBUG
+  this->LogLevel = ctkErrorLogLevel::LogLevel::Debug;
+#else
   this->LogLevel = ctkErrorLogLevel::LogLevel::Warning;
+#endif
 }
 //-----------------------------------------------------------------------------
 ctkLoggerPrivate::~ctkLoggerPrivate()
