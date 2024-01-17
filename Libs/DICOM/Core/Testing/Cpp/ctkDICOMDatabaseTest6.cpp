@@ -21,6 +21,7 @@
 // Qt includes
 #include <QCoreApplication>
 #include <QDir>
+#include <QSignalSpy>
 #include <QTemporaryDir>
 
 // ctkCore includes
@@ -150,6 +151,65 @@ int ctkDICOMDatabaseTest6( int argc, char * argv [] )
               << "' for patient UID of "
               << patientUID.toStdString() << ", instead returned '"
               << patientName.toStdString() << "'"
+              << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  QSignalSpy spySeries(&database, SIGNAL(seriesRemoved(QString)));
+  database.removeSeries(seriesUID);
+  if (spySeries.count() != 1)
+    {
+    std::cerr << "ctkDICOMDatabase: database should fire one seriesRemoved(QString) signal."
+              << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  QStringList seriesUIDs = database.seriesForStudy(studyUID);
+  if (seriesUIDs.count() != 0)
+    {
+    std::cerr << "ctkDICOMDatabase: database should not return any series"
+              << " for study UID "
+              << studyUID.toStdString() << ", instead returned "
+              << seriesUIDs.count()
+              << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  QSignalSpy spyStudy(&database, SIGNAL(studyRemoved(QString)));
+  database.removeStudy(studyUID);
+  if (spyStudy.count() != 1)
+    {
+    std::cerr << "ctkDICOMDatabase: database should fire one studyRemoved(QString) signal."
+              << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  QStringList studyUIDs = database.studiesForPatient(patientUID);
+  if (studyUIDs.count() != 0)
+    {
+    std::cerr << "ctkDICOMDatabase: database should not return any study"
+              << " for patient ID "
+              << patientUID.toStdString() << ", instead returned "
+              << studyUIDs.count()
+              << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  QSignalSpy spyPatient(&database, SIGNAL(patientRemoved(QString)));
+  database.removePatient(patientUID);
+  if (spyPatient.count() != 1)
+    {
+    std::cerr << "ctkDICOMDatabase: database should fire one patientRemoved(QString) signal."
+              << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  QStringList patientIDs = database.patients();
+  if (patientIDs.count() != 0)
+    {
+    std::cerr << "ctkDICOMDatabase: database should not return any patient"
+              << " instead returned "
+              << patientIDs.count()
               << std::endl;
     return EXIT_FAILURE;
     }
